@@ -1,17 +1,6 @@
-# nunu-layout-basic - Basic Layout
+# nunu-layout-basic — 基础布局
 
-Nunu is an application scaffold based on Golang. Its name comes from a game character in League of Legends, a little boy riding on the shoulder of a yeti. Like Nunu, this project also stands on the shoulders of giants. It is a composition of various popular libraries from the Golang ecosystem, which can help you quickly build efficient and reliable applications.
-
-[简体中文介绍](https://github.com/go-nunu/nunu-layout-basic/blob/main/README_zh.md)
-
-![Nunu](https://github.com/go-nunu/nunu/blob/main/.github/assets/banner.png)
-
-## Documentation
-* [User Guide](https://github.com/go-nunu/nunu/blob/main/docs/en/guide.md)
-* [Architecture](https://github.com/go-nunu/nunu/blob/main/docs/en/architecture.md)
-* [Getting Started Tutorial](https://github.com/go-nunu/nunu/blob/main/docs/en/tutorial.md)
-
-## Features
+## 功能
 - **Gin**: https://github.com/gin-gonic/gin
 - **Gorm**: https://github.com/go-gorm/gorm
 - **Wire**: https://github.com/google/wire
@@ -19,49 +8,38 @@ Nunu is an application scaffold based on Golang. Its name comes from a game char
 - **Zap**: https://github.com/uber-go/zap
 - **Golang-jwt**: https://github.com/golang-jwt/jwt
 - **Go-redis**: https://github.com/go-redis/redis
-- **Testify**: https://github.com/stretchr/testify
-- **Sonyflake**: https://github.com/sony/sonyflake
-- **gocron**:  https://github.com/go-co-op/gocron
 - More...
 
-## Highlights
-* **Low Learning Curve and Customization**: Nunu encapsulates popular libraries that Gophers are familiar with. You can easily customize the application to meet specific requirements.
-* **High Performance and Scalability**: Nunu aims to be high-performance and scalable. It utilizes the latest technologies and best practices to ensure your application can handle high traffic and large data volumes.
-* **Security and Reliability**: Nunu uses stable and reliable third-party libraries to ensure the security and reliability of your application.
-* **Modularity and Extensibility**: Nunu is designed to be modular and extensible. You can easily add new features and functionalities by using third-party libraries or writing your own modules.
-* **Comprehensive Documentation and Test Coverage**: Nunu has comprehensive documentation and test coverage. It provides detailed documentation and examples to help you get started quickly. It also includes a test suite to ensure your application works as expected.
-
-## Nunu CLI
-
-![Nunu](https://github.com/go-nunu/nunu/blob/main/.github/assets/screenshot.jpg)
-
-## Directory Structure
+## 目录结构
 ```
 .
 ├── cmd
-│   └── server
-│       ├── main.go
-│       ├── wire.go
-│       └── wire_gen.go
+│   ├── root.go
+│   └── start.go
 ├── config
-│   ├── local.yml
-│   └── prod.yml
+│   ├── config.go
+│   ├── log.go
+│   └── load.go
 ├── internal
-│   ├── handler
-│   │   ├── handler.go
-│   │   └── user.go
-│   ├── middleware
-│   │   └── cors.go
-│   ├── model
-│   │   └── user.go
-│   ├── repository
-│   │   ├── repository.go
-│   │   └── user.go
-│   ├── server
-│   │   └── http.go
-│   └── service
-│       ├── service.go
-│       └── user.go
+│   ├── all
+│   │   └── impl.go
+│   ├── middleware
+│   │   └── cors.go
+│   ├── models
+│   │   └── user.go
+│   ├── dao
+│   │   ├── db
+│   │   │  ├── mysql.go
+│   │   │  └── user.go
+│   │   └── script
+│   │      └── gorm_gen.go
+│   ├── pkg
+│   │   ├── app.go
+│   │   └── ioc.go
+│   ├── user
+│   │   ├── http
+│   │   ├── user.go
+│   │   └── impl
 ├── pkg
 ├── LICENSE
 ├── README.md
@@ -71,76 +49,80 @@ Nunu is an application scaffold based on Golang. Its name comes from a game char
 
 ```
 
-This is a classic directory structure for a Golang project, which includes the following directories:
+这是一个经典的Golang 项目的目录结构，包含以下目录：
 
-- cmd: Contains the entry points of the application, including the main function and dependency injection code.
-  - server: The main entry point of the application, including the main function and dependency injection code.
-    - main.go: The main function used to start the application.
-    - wire.go: The dependency injection code generated using Wire.
-    - wire_gen.go: The dependency injection code generated using Wire.
+- cmd: 存放应用程序的入口点，包括主函数和依赖注入的代码。
+  - root.go: 根命令行
+  - start.go: 启动相关命令
 
-- config: Contains the configuration files of the application.
-  - local.yml: The configuration file for the local environment.
-  - prod.yml: The configuration file for the production environment.
+- config: 存放应用程序的配置文件。
+  - config.go: 配置文件对应的go的结构体。
+  - load.go: 加载配置文件的代码。
 
-- internal: Contains the internal code of the application.
-  - handler: Contains the handlers for handling HTTP requests.
-    - handler.go: The common handler for handling HTTP requests.
-    - user.go: The handler for handling user-related HTTP requests.
-  - middleware: Contains the middleware code.
-    - cors.go: The CORS (Cross-Origin Resource Sharing) middleware.
-  - model: Contains the data model code.
-    - user.go: The user data model.
-  - repository: Contains the data access code.
-    - repository.go: The common interface for data access.
-    - user.go: The implementation of the user data access interface.
-  - server: Contains the server code.
-    - http.go: The implementation of the HTTP server.
-  - service: Contains the business logic code.
-    - service.go: The common interface for business logic.
-    - user.go: The implementation of the user business logic.
+- internal: 存放应用程序的内部代码。
+  - middleware: 存放中间件代码。
+    - cors.go: 跨域资源共享中间件。
+  - all: 把每个包中的init函数放在此处匿名实现
+    - impl.go
+  - models: 存放数据模型代码。
+    - user.go: 用户数据模型。
+  - dao: 存放数据访问代码。
+    -db: 和数据库连接相关 
+      - mysql.go: 初始化数据库连接。
+      - user.go: 用户数据访问接口的实现。
+  - pkg: 存放app中用到的公共包，但不想被外部引用的。
+    - ioc.go: ioc的逻辑在这里面
+    - apps.go: 定义每个app的名字
+  - user: userApp对应的包
+    - http: 希望外部访问的，暴露url的地方
+      - http.go: 把app对应的http注册到ioc之中
+      - user.go: 相当于controller层
+    - impl: 接口实现层相当于java中的impl层
+      - user.go: 接口实现
+      - user_test.go: 接口测试
+    - user.go: 接口定义相当于service层
+- pkg: 存放应用程序的公共包。
+- storage: 存放应用程序的存储文件。
+- go.mod: Go模块文件。
+- go.sum: Go模块的依赖版本文件。
 
-- pkg: Contains the public packages of the application.
-- storage: Contains the storage files of the application.
-- go.mod: The Go module file.
-- go.sum: The dependency versions file for the Go module.
+## 要求
+要使用Nunu，您需要在系统上安装以下软件：
 
-## Requirements
-To use Nunu, you need to have the following software installed on your system:
-
-* Golang 1.16 or higher
+* Golang 1.16或更高版本
 * Git
 
-### Installation
 
-You can install Nunu using the following command:
+
+### 安装
+
+您可以通过以下命令安装Nunu：
 
 ```bash
 go install github.com/go-nunu/nunu@latest
 ```
 
-### Creating a New Project
 
-You can create a new Golang project using the following command:
+### 创建新项目
+
+您可以使用以下命令创建一个新的Golang项目：
 
 ```bash
 nunu new projectName
 ```
-
-By default, it will pull from the GitHub repository, but you can also use a mirror repository for faster access:
-
+默认拉取github源，你也可以使用国内加速仓库
 ```
-// Use the basic template
+// 使用基础模板
 nunu new projectName -r https://gitee.com/go-nunu/nunu-layout-basic.git
-// Use the advanced template
+// 使用高级模板
 nunu new projectName -r https://gitee.com/go-nunu/nunu-layout-advanced.git
 ```
 
-This command will create a directory named `projectName` and generate an elegant Golang project structure within it.
+此命令将创建一个名为`projectName`的目录，并在其中生成一个优雅的Golang项目结构。
 
-### Creating Components
+### 创建组件
 
-You can create handlers, services, repositories, and models for your project using the following commands:
+您可以使用以下命令为项目创建handler、service和dao等组件：
 
 ```bash
 nunu create handler user
@@ -148,37 +130,36 @@ nunu create service user
 nunu create repository user
 nunu create model user
 ```
-or
+或
 ```
 nunu create all user
 ```
+这些命令将分别创建一个名为`UserHandler`、`UserService`、`UserDao`和`UserModel`的组件，并将它们放置在正确的目录中。
 
-These commands will create components named `UserHandler`, `UserService`, `UserDao`, and `UserModel` respectively and place them in the correct directories.
+### 启动项目
 
-### Starting the Project
-
-You can quickly start your project using the following command:
+您可以使用以下命令快速启动项目：
 
 ```bash
 nunu run
 ```
 
-This command will start your Golang project and support hot-reloading of files.
+此命令将启动您的Golang项目，并支持文件更新热重启。
 
-### Compiling wire.go
+### 编译wire.go
 
-You can quickly compile `wire.go` using the following command:
+您可以使用以下命令快速编译`wire.go`：
 
 ```bash
 nunu wire
 ```
 
-This command will compile your `wire.go` file and generate the required dependencies.
+此命令将编译您的`wire.go`文件，并生成所需的依赖项。
 
-## Contribution
+## 贡献
 
-If you find any issues or have any improvement suggestions, please feel free to raise an issue or submit a pull request. Your contributions are highly appreciated!
+如果您发现任何问题或有任何改进意见，请随时提出问题或提交拉取请求。我们非常欢迎您的贡献！
 
-## License
+## 许可证
 
-Nunu is released under the MIT License. See the [LICENSE](LICENSE) file for more information.
+Nunu是根据MIT许可证发布的。有关更多信息，请参见[LICENSE](LICENSE)文件。
