@@ -1,6 +1,8 @@
 package pkg
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -33,6 +35,8 @@ func RegistryImpl(service Service) {
 		panic("Service is registered")
 	}
 
+	fmt.Println(service.Name())
+
 	// 维护起来
 	services[service.Name()] = service
 }
@@ -59,6 +63,8 @@ func RegistryGin(hdl HTTPHandler) {
 	if _, ok := httpHandler[hdl.Name()]; ok {
 		panic("Handler is registered")
 	}
+
+	fmt.Println(hdl.Name())
 
 	// 维护起来
 	httpHandler[hdl.Name()] = hdl

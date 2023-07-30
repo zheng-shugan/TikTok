@@ -28,11 +28,11 @@ func (h *UserServiceImpl) Name() string {
 }
 
 func (h *UserServiceImpl) Config() {
-	h.l = log.New(os.Stderr, "  [Host] ", log.Ldate|log.Ltime|log.Lshortfile)
+	h.l = log.New(os.Stderr, "  [user] ", log.Ldate|log.Ltime|log.Lshortfile)
 }
 
 func NewHostServiceImpl() *UserServiceImpl {
 	return &UserServiceImpl{
-		l: log.New(os.Stderr, "  [Host] ", log.Ldate|log.Ltime|log.Lshortfile),
+		l: log.New(os.Stderr, "  [user] ", log.Ldate|log.Ltime|log.Lshortfile),
 	}
 }

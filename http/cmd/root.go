@@ -13,10 +13,10 @@ var (
 )
 
 var RootCmd = &cobra.Command{
-	Use:     "demo-api",
-	Long:    "demo API后端",
-	Short:   "demo API后端",
-	Example: "demo API后端 commands",
+	Use:     "tiktok",
+	Long:    "tiktok API后端",
+	Short:   "tiktok API后端",
+	Example: "tiktok API后端 commands",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if vers {
 			fmt.Println(version.FullVersion())

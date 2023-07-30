@@ -1,16 +1,22 @@
 package cmd
 
 import (
+	"context"
+	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 	config "github.com/sunflower10086/TikTok/http/config"
 	"github.com/sunflower10086/TikTok/http/internal/dao/db"
 	"github.com/sunflower10086/TikTok/http/internal/pkg"
-	"github.com/sunflower10086/TikTok/http/protocol"
+
+	_ "github.com/sunflower10086/TikTok/http/internal/all"
 )
 
 var (
@@ -19,9 +25,9 @@ var (
 
 var StartCmd = &cobra.Command{
 	Use:     "start",
-	Long:    "demo API后端",
-	Short:   "demo API后端",
-	Example: "demo API后端 commands",
+	Long:    "tiktok API后端",
+	Short:   "tiktok API后端",
+	Example: "tiktok API后端 commands",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// 加载配置文件
 		if err := config.LoadConfigFromYaml(configFile); err != nil {
@@ -36,51 +42,56 @@ var StartCmd = &cobra.Command{
 		// 注册服务到IOC
 		pkg.InitImpl()
 
-		master := newMaster()
-
-		// 优雅启停
-		// 相当于监听一下 kill -2 和 kill -9
-		quit := make(chan os.Signal)
-		// kill (no param) default send syscanll.SIGTERM
-		// kill -2 is syscall.SIGINT (Ctrl + C)
-		// kill -9 is syscall.SIGKILL
-		signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-
-		go master.WaitStop(quit)
-
-		return master.Start()
+		return run()
 	},
 }
 
-func newMaster() *master {
-	return &master{
-		http: protocol.NewHTTPService(),
-	}
-}
+func run() error {
+	g := gin.Default()
 
-type master struct {
-	http *protocol.HTTPService
-}
-
-func (m *master) Start() error {
-	if err := m.http.Start(); err != nil {
+	if err := pkg.InitGinHandler(g); err != nil {
 		return err
 	}
-	return nil
-}
 
-func (m *master) Stop() {
-	log.Printf("Shutdown %s ...\n", m.http.Conf.App.Name)
-}
+	handlers := pkg.LoadedGinApp()
+	fmt.Println("loaded handler has", handlers)
 
-func (m *master) WaitStop(quit <-chan os.Signal) {
-	for v := range quit {
-		switch v {
-		default:
-			m.http.L.Printf("received signal: %s", v)
-			m.http.Stop()
-		}
+	srv := &http.Server{
+		Addr:    config.C().Apps.HTTP.GetAddr(),
+		Handler: g,
 	}
+
+	go func() {
+		// service connections
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("listen: %s\n", err)
+		}
+	}()
+
+	// Wait for interrupt signal to gracefully shutdown the server with
+	// a timeout of 5 seconds.
+	quit := make(chan os.Signal)
+	// kill (no param) default send syscanll.SIGTERM
+	// kill -2 is syscall.SIGINT
+	// kill -9 is syscall. SIGKILL but can"t be catch, so don't need add it
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+	log.Println("Shutdown Server ...")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Fatal("Server Shutdown:", err)
+		return err
+	}
+	// catching ctx.Done(). timeout of 5 seconds.
+	select {
+	case <-ctx.Done():
+		log.Println("timeout of 2 seconds.")
+	}
+	log.Println("Server exiting")
+
+	return nil
 }
 
 func init() {

@@ -2,6 +2,7 @@ package http
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sunflower10086/TikTok/http/internal/pkg"
@@ -38,4 +39,7 @@ func (h *Handler) Config() error {
 }
 
 func (h *Handler) RouteRegistry(g *gin.Engine) {
+	g.GET("/", func(context *gin.Context) {
+		context.JSON(http.StatusOK, "")
+	})
 }

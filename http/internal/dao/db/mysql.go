@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/sunflower10086/restful-api-demo/conf"
+	config "github.com/sunflower10086/TikTok/http/config"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -25,11 +25,11 @@ func GetDB() *gorm.DB {
 
 func Init() error {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		conf.C().MySQL.UserName,
-		conf.C().MySQL.Password,
-		conf.C().MySQL.Host,
-		conf.C().MySQL.Port,
-		conf.C().MySQL.Database,
+		config.C().MySQL.User,
+		config.C().MySQL.Password,
+		config.C().MySQL.Host,
+		config.C().MySQL.Port,
+		config.C().MySQL.Dbname,
 	)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
@@ -38,10 +38,10 @@ func Init() error {
 
 	sqlDB, _ := db.DB()
 	// SetMaxIdleConns 用于设置连接池中空闲连接的最大数量。
-	sqlDB.SetMaxIdleConns(conf.C().MySQL.MaxIdleConn)
+	sqlDB.SetMaxIdleConns(config.C().MySQL.MaxIdleConns)
 
 	// SetMaxOpenConns 设置打开数据库连接的最大数量。
-	sqlDB.SetMaxOpenConns(conf.C().MySQL.MaxOpenConn)
+	sqlDB.SetMaxOpenConns(config.C().MySQL.MaxOpenConns)
 
 	// SetConnMaxLifetime 设置了连接可复用的最大时间。
 	sqlDB.SetConnMaxLifetime(time.Hour)
