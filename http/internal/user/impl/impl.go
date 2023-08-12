@@ -1,38 +1,22 @@
 package impl
 
 import (
-	"log"
-	"os"
+	"context"
 
-	"github.com/sunflower10086/TikTok/http/internal/pkg"
+	"github.com/sunflower10086/TikTok/http/internal/user"
 )
 
-var impl = &UserServiceImpl{}
-
-/*
-	之前都是手动把实现的服务注册到IOC层的
-	apps.HostService = impl.NewHostServiceImpl()
-*/
-
-type UserServiceImpl struct {
-	l *log.Logger
+func Login(ctx context.Context, request *user.LoginRequest) (*user.LoginResponse, error) {
+	//TODO implement me
+	panic("implement me")
 }
 
-// 通过匿名引入可以动态注册我们实现的服务
-func init() {
-	pkg.RegistryImpl(impl)
+func Register(ctx context.Context, request *user.RegisterRequest) (*user.RegisterResponse, error) {
+	//TODO implement me
+	panic("implement me")
 }
 
-func (h *UserServiceImpl) Name() string {
-	return pkg.UserAppName
-}
-
-func (h *UserServiceImpl) Config() {
-	h.l = log.New(os.Stderr, "  [user] ", log.Ldate|log.Ltime|log.Lshortfile)
-}
-
-func NewHostServiceImpl() *UserServiceImpl {
-	return &UserServiceImpl{
-		l: log.New(os.Stderr, "  [user] ", log.Ldate|log.Ltime|log.Lshortfile),
-	}
+func GetInfo(ctx context.Context, request *user.GetInfoRequest) (*user.GetInfoResponse, error) {
+	//TODO implement me
+	panic("implement me")
 }

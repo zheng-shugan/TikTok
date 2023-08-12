@@ -2,12 +2,15 @@ package db
 
 import (
 	"fmt"
+	"log"
+	"os"
 	"sync"
 	"time"
 
 	config "github.com/sunflower10086/TikTok/http/config"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 var (
@@ -31,7 +34,21 @@ func Init() error {
 		config.C().MySQL.Port,
 		config.C().MySQL.Dbname,
 	)
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+
+	newLogger := logger.New(
+		log.New(os.Stdout, "\n", log.LstdFlags),
+		logger.Config{
+			SlowThreshold:             time.Second,
+			Colorful:                  true,
+			IgnoreRecordNotFoundError: false,
+			ParameterizedQueries:      false,
+			LogLevel:                  logger.Info,
+		},
+	)
+
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		Logger: newLogger,
+	})
 	if err != nil {
 		return err
 	}

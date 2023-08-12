@@ -1,25 +1,14 @@
-package conf
+package config
 
 import (
-	"os"
 	"testing"
 )
 
 func TestLoadConfigFromToml(t *testing.T) {
 
-	err := LoadConfigFromToml("../etc/demo.toml")
+	err := LoadConfigFromYaml("../etc/config.yaml")
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(C().App.Name)
-}
-
-func TestLoadConfigFromEnv(t *testing.T) {
-
-	os.Setenv("MYSQL_DATABASE", "unit_test")
-	err := LoadConfigFromEnv()
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Log(C().MySQL.Database)
+	t.Log(C().Apps.HTTP.Name)
 }

@@ -1,4 +1,4 @@
-package conf
+package config
 
 import (
 	"fmt"
@@ -19,6 +19,7 @@ func LoadConfigFromYaml(filePath string) error {
 	// 会从多个地方寻找配置文件
 	viper.AddConfigPath("./etc")  // 在工作目录中查找配置文件，现在当前目录找，找不到走下面的目录，添加多个路径
 	viper.AddConfigPath("../etc") // 在工作目录中查找配置文件
+	viper.AddConfigPath(filePath) // 在工作目录中查找配置文件
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
 			// 配置文件未找到
