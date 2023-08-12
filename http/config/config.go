@@ -14,6 +14,7 @@ type Config struct {
 	Apps  *App   `mapstructure:"server"`
 	Log   *Log   `mapstructure:"log"`
 	MySQL *MySQL `mapstructure:"mysql" `
+	Oss   *Oss   `mapstructure:oss""`
 }
 
 type App struct {
@@ -50,6 +51,14 @@ type MySQL struct {
 	Dbname       string `mapstructure:"dbname"`
 	MaxIdleConns int    `mapstructure:"max_idle_conns"`
 	MaxOpenConns int    `mapstructure:"max_open_conns"`
+}
+
+type Oss struct {
+	AccessKeyId     string `mapstructure:"ALI_AK"`
+	AccessKeySecret string `mapstructure:"ALI_SK"`
+	OssEndpoint     string `mapstructure:"ALI_OSS_ENDPOINT"`
+	BucketName      string `mapstructure:"ALI_BUCKET_NAME"`
+	PlayUrlPrefix   string `mapstructure:"PLAY_URL_PREFIX"`
 }
 
 //type RedisConfig struct {

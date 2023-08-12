@@ -1,5 +1,5 @@
 /storage/
 .idea
 *.log
-/etc
+/etc/*.yaml
 .vscode
