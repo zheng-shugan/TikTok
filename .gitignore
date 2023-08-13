@@ -1,0 +1,6 @@
+/storage/
+.idea
+*.log
+/etc/*.yaml
+.vscode
+node_modules
