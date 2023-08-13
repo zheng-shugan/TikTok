@@ -1,17 +1,18 @@
 package result
 
 type Response struct {
-	StatusCode int64   `json:"status_code"`
+	StatusCode int32   `json:"status_code"`
 	StatusMsg  *string `json:"status_msg"`
 }
 
 const (
-	SuccessCode   int64 = 0
-	ParamErrCode  int64 = 100
-	ServerErrCode int64 = 200
-	AuthErrCode   int64 = 300
+	SuccessCode   int32 = 0
+	ParamErrCode  int32 = 100
+	ServerErrCode int32 = 200
+	AuthErrCode   int32 = 300
 )
 
 const (
 	ParamErrMsg string = "wrong input parameter"
+	SuccessMsg  string = "success"
 )
