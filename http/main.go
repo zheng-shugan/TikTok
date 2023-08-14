@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"net/http"
 
@@ -10,8 +11,10 @@ import (
 	"github.com/sunflower10086/TikTok/http/internal/router"
 )
 
+var configFile = flag.String("f", "etc/", "the config file")
+
 func init() {
-	config.LoadConfigFromYaml("./")
+	config.LoadConfigFromYaml(*configFile)
 
 	db.Init()
 }

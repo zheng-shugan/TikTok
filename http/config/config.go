@@ -14,7 +14,7 @@ type Config struct {
 	Apps  *App   `mapstructure:"server"`
 	Log   *Log   `mapstructure:"log"`
 	MySQL *MySQL `mapstructure:"mysql" `
-	Oss   *Oss   `mapstructure:oss""`
+	Oss   *Oss   `mapstructure:"oss"`
 }
 
 type App struct {

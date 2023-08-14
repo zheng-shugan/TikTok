@@ -1,9 +1,30 @@
-package videostream
+package video
 
-import "context"
+import (
+	"context"
+	"mime/multipart"
 
-type GetFeedVideoService interface {
+	"github.com/sunflower10086/TikTok/http/internal/pkg/result"
+)
+
+type Server interface {
+	// GetFeedVideo 获得30个视频
 	GetFeedVideo(context.Context, *GetFeedVideoReq) (*GetFeedVideoResp, error)
+	// PublishAction 上传视频
+	PublishAction(context.Context, *PublishRequest) (*PublishResponse, error)
+	// GetPublishList 获得用户所有投稿过的视频
+	GetPublishList(context.Context, GetPublishListReq) (GetPublishListResp, error)
+}
+
+type GetPublishListReq struct {
+	UserID int64  `json:"user_id"`
+	Token  string `json:"token"`
+}
+
+type GetPublishListResp struct {
+	StatusCode int32    `json:"status_code"`
+	StatusMsg  string   `json:"status_msg"`
+	VideoList  []*Video `json:"video_list"`
 }
 
 type GetFeedVideoReq struct {
@@ -42,4 +63,13 @@ type User struct {
 	TotalFavorited  int64  `json:"total_favorited"`
 	WorkCount       int64  `json:"work_count"`
 	FavoriteCount   int64  `json:"favorite_count"`
+}
+
+type PublishRequest struct {
+	Data  *multipart.FileHeader `json:"data" binding:"required" form:"data"`
+	Title string                `json:"title" binding:"required" form:"title"`
+}
+
+type PublishResponse struct {
+	result.Response
 }
