@@ -2,6 +2,7 @@ package impl
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
@@ -93,6 +94,8 @@ func PublishAction(ctx *gin.Context, req *video.PublishRequest) (*video.PublishR
 		return nil, err
 	}
 
+	log.Println(downURL)
+	fmt.Println(downURL)
 	userId := ctx.GetInt64("user_id")
 
 	err = dao.SaveVideo(ctx, downURL, req.Title, userId)
