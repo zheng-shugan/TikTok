@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/sunflower10086/TikTok/http/config"
 	"github.com/sunflower10086/TikTok/http/internal/dao"
 	"github.com/sunflower10086/TikTok/http/internal/pkg/jwt"
 	"github.com/sunflower10086/TikTok/http/internal/pkg/oss/aliyun"
@@ -78,7 +79,7 @@ func PublishAction(ctx *gin.Context, req *video.PublishRequest) (*video.PublishR
 	// 保证唯一的 videoName
 	videoName := uuid.New().String()
 
-	// ossConf := config.C().Oss
+	ossConf := config.C().Oss
 
 	// var uploader oss.Uploader
 
