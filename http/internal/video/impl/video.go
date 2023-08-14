@@ -5,6 +5,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/sunflower10086/TikTok/http/config"
 	"github.com/sunflower10086/TikTok/http/internal/dao"
@@ -66,7 +67,7 @@ func GetFeedVideo(ctx context.Context, req *video.GetFeedVideoReq) (*video.GetFe
 	}, nil
 }
 
-func PublishAction(ctx context.Context, req *video.PublishRequest) (*video.PublishResponse, error) {
+func PublishAction(ctx *gin.Context, req *video.PublishRequest) (*video.PublishResponse, error) {
 	// 保证唯一的 videoName
 	videoName := uuid.New().String()
 
@@ -79,16 +80,18 @@ func PublishAction(ctx context.Context, req *video.PublishRequest) (*video.Publi
 		return nil, err
 	}
 
-	err = uploader.Upload(ossConf.BucketName, ossConf.PlayUrlPrefix+videoName+".mp4", req.Data)
+	downURL, err := uploader.Upload(ossConf.BucketName, ossConf.PlayUrlPrefix+videoName+".mp4", req.Data)
 	if err != nil {
 		return nil, err
 	}
 
-	// err = dao.UploadVideo(videoName, userId, title)
-	// if err != nil {
-	// 	log.Println("视频存入数据库失败！")
-	// 	return nil, err
-	// }
+	userId := ctx.GetInt64("user_id")
+
+	err = dao.SaveVideo(ctx, downURL, req.Title, userId)
+	if err != nil {
+		log.Println("视频存入数据库失败！")
+		return nil, err
+	}
 
 	return &video.PublishResponse{
 		Response: result.Response{StatusCode: result.SuccessCode},

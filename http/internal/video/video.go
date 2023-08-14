@@ -4,6 +4,7 @@ import (
 	"context"
 	"mime/multipart"
 
+	"github.com/gin-gonic/gin"
 	"github.com/sunflower10086/TikTok/http/internal/pkg/result"
 )
 
@@ -11,7 +12,7 @@ type Server interface {
 	// GetFeedVideo 获得30个视频
 	GetFeedVideo(context.Context, *GetFeedVideoReq) (*GetFeedVideoResp, error)
 	// PublishAction 上传视频
-	PublishAction(context.Context, *PublishRequest) (*PublishResponse, error)
+	PublishAction(*gin.Context, *PublishRequest) (*PublishResponse, error)
 	// GetPublishList 获得用户所有投稿过的视频
 	GetPublishList(context.Context, GetPublishListReq) (GetPublishListResp, error)
 }
