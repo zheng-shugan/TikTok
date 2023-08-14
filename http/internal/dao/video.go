@@ -2,7 +2,9 @@ package dao
 
 import (
 	"context"
+	"time"
 
+	"github.com/sunflower10086/TikTok/http/internal/models"
 	"github.com/sunflower10086/TikTok/http/internal/video"
 )
 
@@ -22,6 +24,12 @@ func CheckIsFollow(ctx context.Context, videos []*video.Video, userID int64) err
 	return nil
 }
 
-func SaveVideo(ctx context.Context, video video.Video) error {
+func SaveVideo(ctx context.Context, videoName string, authorId int64, title string) error {
+	var video models.Video
+	video.AuthorID = authorId
+	video.Title = title
+	video.PlayURL = videoName + ".mp4"
+	// video.CoverURL = video.PlayUrl + config.COVER_URL_SUFFIX
+	video.CreateTime = time.Now().Unix()
 	return nil
 }

@@ -2,20 +2,31 @@ package impl
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"log"
+	"os"
+	"strconv"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/sunflower10086/TikTok/http/config"
 	"github.com/sunflower10086/TikTok/http/internal/dao"
 	"github.com/sunflower10086/TikTok/http/internal/pkg/jwt"
-	"github.com/sunflower10086/TikTok/http/internal/pkg/oss"
-	"github.com/sunflower10086/TikTok/http/internal/pkg/oss/aliyun"
 	"github.com/sunflower10086/TikTok/http/internal/pkg/result"
 	"github.com/sunflower10086/TikTok/http/internal/video"
 )
 
-const LIMIT = 30 //返回的视频数
+const (
+	B  = 1 << 3
+	KB = B << 10
+	MB = KB << 10
+)
+
+const (
+	LIMIT     = 30 //返回的视频数
+	MAX_VIDEO = 10 * MB
+)
 
 func GetFeedVideo(ctx context.Context, req *video.GetFeedVideoReq) (*video.GetFeedVideoResp, error) {
 	// latest_time默认为当前时间，若请求参数不为空则更新
@@ -66,29 +77,47 @@ func GetFeedVideo(ctx context.Context, req *video.GetFeedVideoReq) (*video.GetFe
 	}, nil
 }
 
-func PublishAction(ctx context.Context, req *video.PublishRequest) (*video.PublishResponse, error) {
+func PublishAction(ctx *gin.Context, req *video.PublishRequest) (*video.PublishResponse, error) {
 	// 保证唯一的 videoName
 	videoName := uuid.New().String()
 
-	ossConf := config.C().Oss
+	// ossConf := config.C().Oss
 
-	var uploader oss.Uploader
+	// var uploader oss.Uploader
 
-	uploader, err := aliyun.NewAliOssStore(ossConf)
-	if err != nil {
-		return nil, err
-	}
-
-	err = uploader.Upload(ossConf.BucketName, ossConf.PlayUrlPrefix+videoName+".mp4", req.Data)
-	if err != nil {
-		return nil, err
-	}
-
-	// err = dao.UploadVideo(videoName, userId, title)
+	// uploader, err := aliyun.NewAliOssStore(ossConf)
 	// if err != nil {
-	// 	log.Println("视频存入数据库失败！")
 	// 	return nil, err
 	// }
+	// 阿里云oss存储，域名没有备案，换个方式
+	// err = uploader.Upload(ossConf.BucketName, ossConf.OssVideoDir+videoName+".mp4", req.Data)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// 存储视频在本地
+	dir, _ := os.Getwd()
+	_ = os.Mkdir("video", os.ModeDir)
+	f, _ := os.Create(dir + "\\video\\" + videoName + ".mp4")
+	defer f.Close()
+	f2, _ := req.Data.Open()
+	data := make([]byte, MAX_VIDEO)
+	n, _ := f2.Read(data)
+	f.Write(data[:n])
+
+	// 从cookie中取user_id，(生成token的时候会把user_id存入cookie)
+	CookieGetId, ok := ctx.Get("user_id")
+	if ok == false {
+		return nil, errors.New("从cookie中获取userId失败")
+	}
+	userIdStr := fmt.Sprintf("%v", CookieGetId)
+	userId, err := strconv.Atoi(userIdStr)
+
+	err = dao.SaveVideo(ctx, ossConf.OssVideoDir+videoName+".mp4", int64(userId), req.Title)
+	if err != nil {
+		log.Println("视频存入数据库失败！")
+		return nil, err
+	}
 
 	return &video.PublishResponse{
 		Response: result.Response{StatusCode: result.SuccessCode},

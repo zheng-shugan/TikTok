@@ -69,17 +69,20 @@ func PublishAction(ctx *gin.Context) {
 				StatusMsg:  &msg,
 			},
 		})
+		return
 	}
 
 	_, err := impl.PublishAction(ctx, &publishParam)
 	if err != nil {
-		msg := result.ParamErrMsg
+		// msg := result.ParamErrMsg
+		msg := err.Error()
 		ctx.JSON(http.StatusOK, video.PublishResponse{
 			Response: result.Response{
 				StatusCode: result.ServerErrCode,
 				StatusMsg:  &msg,
 			},
 		})
+		return
 	}
 
 	ctx.JSON(http.StatusOK, video.PublishResponse{

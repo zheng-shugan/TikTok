@@ -58,6 +58,7 @@ type Oss struct {
 	AccessKeySecret string `mapstructure:"ALI_SK"`
 	OssEndpoint     string `mapstructure:"ALI_OSS_ENDPOINT"`
 	BucketName      string `mapstructure:"ALI_BUCKET_NAME"`
+	OssVideoDir     string `mapstructure:"	OSS_VIDEO_DIR"`
 	PlayUrlPrefix   string `mapstructure:"PLAY_URL_PREFIX"`
 }
 
