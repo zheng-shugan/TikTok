@@ -3,7 +3,6 @@
 ## 功能
 - **Gin**: https://github.com/gin-gonic/gin
 - **Gorm**: https://github.com/go-gorm/gorm
-- **Wire**: https://github.com/google/wire
 - **Viper**: https://github.com/spf13/viper
 - **Zap**: https://github.com/uber-go/zap
 - **Golang-jwt**: https://github.com/golang-jwt/jwt
@@ -73,3 +72,6 @@
 > - go.mod:                                                                    Go模块文件。
 > - go.sum:                                                                    Go模块的依赖版本文件。
 > - main.go                                                                    程序的主入口
+
+### 项目的接口文档
+[点击这里进入](https://github.com/sunflower10086/TikTok/tree/master/http/docs)
