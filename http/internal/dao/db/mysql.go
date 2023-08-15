@@ -46,14 +46,14 @@ func Init() error {
 		},
 	)
 
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+	d, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: newLogger,
 	})
 	if err != nil {
 		return err
 	}
 
-	sqlDB, _ := db.DB()
+	sqlDB, _ := d.DB()
 	// SetMaxIdleConns 用于设置连接池中空闲连接的最大数量。
 	sqlDB.SetMaxIdleConns(config.C().MySQL.MaxIdleConns)
 
@@ -66,7 +66,7 @@ func Init() error {
 		return err
 	}
 
-	db = db
+	db = d
 
 	return nil
 }
