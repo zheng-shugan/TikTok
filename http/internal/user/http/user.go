@@ -1,6 +1,7 @@
 package http
 
 import (
+	"github.com/sunflower10086/TikTok/http/internal/pkg/token"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -107,5 +108,15 @@ func GetUserInfo(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, user.GetInfoResponse{
 		Response: result.Response{StatusCode: result.SuccessCode},
 		User:     resp.User,
+	})
+}
+
+func Test(ctx *gin.Context) {
+	// 通过token获取用户信息
+	userId, username := token.GetUserIDAndUsernameFromCtx(ctx)
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"userId":   userId,
+		"username": username,
 	})
 }

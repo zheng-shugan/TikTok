@@ -5,12 +5,16 @@ go 1.16
 require (
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.8+incompatible
 	github.com/bytedance/sonic v1.9.2 // indirect
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fsnotify/fsnotify v1.6.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-playground/validator/v10 v10.14.1 // indirect
 	github.com/google/uuid v1.3.0
+	github.com/howeyc/fsnotify v0.9.0 // indirect
 	github.com/k0kubun/go-ansi v0.0.0-20180517002512-3bf9e2903213
 	github.com/klauspost/cpuid/v2 v2.2.5 // indirect
+	github.com/pilu/config v0.0.0-20131214182432-3eb99e6c0b9a // indirect
+	github.com/pilu/fresh v0.0.0-20190826141211-0fa698148017 // indirect
 	github.com/schollz/progressbar/v3 v3.13.1
 	github.com/spf13/viper v1.16.0
 	go.uber.org/atomic v1.10.0 // indirect
