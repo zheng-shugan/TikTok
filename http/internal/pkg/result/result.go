@@ -9,7 +9,7 @@ const (
 	SuccessCode   int32 = 0
 	ParamErrCode  int32 = 100
 	ServerErrCode int32 = 200
-	AuthErrCode   int32 = 300
+	AuthErrCode   int32 = 401
 )
 
 const (

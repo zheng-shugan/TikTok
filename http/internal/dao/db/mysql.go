@@ -2,6 +2,8 @@ package db
 
 import (
 	"fmt"
+	"github.com/sunflower10086/TikTok/http/internal/models"
+	"gorm.io/gorm/schema"
 	"log"
 	"os"
 	"sync"
@@ -19,11 +21,15 @@ var (
 )
 
 func GetDB() *gorm.DB {
-	var d *gorm.DB
-	once.Do(func() {
-		d = db
-	})
-	return d
+	// BUG: 由于once.Do()的特性，如果在一个goroutine中调用GetDB()，
+	// 然后在另一个goroutine中调用Init()，
+	// 会导致Init()中的once.Do()不会执行，从而导致db为nil
+
+	//var d *gorm.DB
+	//once.Do(func() {
+	//	d = db
+	//})
+	return db
 }
 
 func Init() error {
@@ -35,6 +41,7 @@ func Init() error {
 		config.C().MySQL.Dbname,
 	)
 
+	// 日志配置
 	newLogger := logger.New(
 		log.New(os.Stdout, "\n", log.LstdFlags),
 		logger.Config{
@@ -46,14 +53,18 @@ func Init() error {
 		},
 	)
 
-	d, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+	_db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: newLogger,
+		NamingStrategy: schema.NamingStrategy{
+			SingularTable: true,
+		},
 	})
 	if err != nil {
 		return err
 	}
 
-	sqlDB, _ := d.DB()
+	sqlDB, _ := _db.DB()
+
 	// SetMaxIdleConns 用于设置连接池中空闲连接的最大数量。
 	sqlDB.SetMaxIdleConns(config.C().MySQL.MaxIdleConns)
 
@@ -66,7 +77,24 @@ func Init() error {
 		return err
 	}
 
-	db = d
+	db = _db
+
+	err = autoMigrateDB(_db)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// 自动迁移数据库，如果没有表则自动创建
+func autoMigrateDB(db *gorm.DB) error {
+	// 创建User表
+	err := db.AutoMigrate(&models.User{})
+
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
