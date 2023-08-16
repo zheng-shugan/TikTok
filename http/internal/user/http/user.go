@@ -2,6 +2,7 @@ package http
 
 import (
 	"github.com/sunflower10086/TikTok/http/internal/pkg/token"
+	"github.com/sunflower10086/TikTok/http/internal/user/helper"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -18,11 +19,15 @@ func Login(ctx *gin.Context) {
 
 	// 参数校验
 	if err := ctx.ShouldBind(&loginParam); err != nil {
-		msg := result.ParamErrMsg
+		errorMessages, done := helper.HandleUserCheckError(ctx, err)
+		if done {
+			return
+		}
+
 		ctx.JSON(http.StatusOK, user.LoginResponse{
 			Response: result.Response{
 				StatusCode: result.ParamErrCode,
-				StatusMsg:  &msg,
+				StatusMsg:  &errorMessages,
 			},
 		})
 
@@ -53,11 +58,15 @@ func Register(ctx *gin.Context) {
 
 	// 参数校验
 	if err := ctx.ShouldBind(&registerParam); err != nil {
-		msg := result.ParamErrMsg
+		errorMessages, done := helper.HandleUserCheckError(ctx, err)
+		if done {
+			return
+		}
+
 		ctx.JSON(http.StatusOK, user.RegisterResponse{
 			Response: result.Response{
 				StatusCode: result.ParamErrCode,
-				StatusMsg:  &msg,
+				StatusMsg:  &errorMessages,
 			},
 		})
 
@@ -115,6 +124,7 @@ func GetUserInfo(ctx *gin.Context) {
 	})
 }
 
+// Test 示例，测试token，如何从token中获取用户信息
 func Test(ctx *gin.Context) {
 	// 通过token获取用户信息
 	userId, username := token.GetUserIDAndUsernameFromCtx(ctx)

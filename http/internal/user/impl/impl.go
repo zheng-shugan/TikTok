@@ -20,10 +20,10 @@ func Login(ctx context.Context, request *user.LoginRequest) (*user.LoginResponse
 	}
 
 	if userByUsername == nil {
-		return nil, errors.New("用户名不存在")
+		return nil, errors.New("账号密码错误")
 	}
 
-	if userByUsername.Password != crypto.MD5Hash(request.Password) {
+	if userByUsername.Password != crypto.SHA512Hash(request.Password) {
 		return nil, errors.New("账号密码错误")
 	}
 
@@ -58,7 +58,7 @@ func Register(ctx context.Context, request *user.RegisterRequest) (*user.Registe
 
 	newUser := models.User{
 		Username: request.Username,
-		Password: crypto.MD5Hash(request.Password), // MD5哈希加密
+		Password: crypto.SHA512Hash(request.Password), // MD5哈希加密
 	}
 
 	err = dao.CreateUser(&newUser)

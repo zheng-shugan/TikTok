@@ -5,6 +5,8 @@
 
 路由的末尾必须加入斜杠，否则"抖声"会报错307
 
+[gin相关issue](https://github.com/gin-gonic/gin/issues/1004)
+
 `
 [GIN-debug] redirecting request 307: /douyin/user/login --> /douyin/user/login?username=testuser%40qq.com&password=123456
 `
