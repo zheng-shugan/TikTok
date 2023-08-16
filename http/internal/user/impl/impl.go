@@ -42,7 +42,7 @@ func Login(ctx context.Context, request *user.LoginRequest) (*user.LoginResponse
 }
 
 func Register(ctx context.Context, request *user.RegisterRequest) (*user.RegisterResponse, error) {
-	// 新用户注册时提供用户名，密码，昵称即可，
+	// 新用户注册时提供用户名，密码即可，
 	// 用户名需要保证唯一。创建成功后返回用户 id 和权限token.
 
 	// 检测用户名是否已经存在

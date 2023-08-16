@@ -25,6 +25,8 @@ func Login(ctx *gin.Context) {
 				StatusMsg:  &msg,
 			},
 		})
+
+		return
 	}
 
 	// 调用服务的接口
@@ -58,6 +60,8 @@ func Register(ctx *gin.Context) {
 				StatusMsg:  &msg,
 			},
 		})
+
+		return
 	}
 
 	// 调用服务的接口

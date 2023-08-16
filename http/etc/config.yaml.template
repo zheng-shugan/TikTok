@@ -2,7 +2,7 @@ server:
   http:
     name: "backend"
     mode: "dev"
-    host: "127.0.0.1"
+    host: "0.0.0.0" # 局域网内部允许访问
     port: "3000"
 #之后的微服务会再添加一些服务
 

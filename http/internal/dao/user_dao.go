@@ -19,19 +19,19 @@ func DeleteUser(user *models.User) error {
 	return db.GetDB().Delete(user).Error
 }
 
-// 改
+// UpdateUser 改
 func UpdateUser(user *models.User) error {
 	return db.GetDB().Save(user).Error
 }
 
-// 查
+// GetUserByID 查
 func GetUserByID(id uint64) (*models.User, error) {
 	var user models.User
 	err := db.GetDB().Where("id = ?", id).First(&user).Error
 	return &user, err
 }
 
-// 通过用户名查找用户
+// GetUserByUsername 通过用户名查找用户
 func GetUserByUsername(username string) (*models.User, error) {
 	var user models.User
 	err := db.GetDB().Where("username = ?", username).First(&user).Error
