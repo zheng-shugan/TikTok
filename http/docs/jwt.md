@@ -16,9 +16,9 @@ withAuthRouter := r.Group("/douyin", middleware.JWTAuthMiddleware())
 
 如果用户没有登录，访问这些路由，会返回401错误
 
-登录状态需要在请求头中携带token，token的key是Authorization，value是`Bearer + 空格 + token`
+登录状态需要在请求的query参数中携带token
 
-![img.png](..%2F..%2F..%2Fimages%2Fimg.png)
+![img_1.png](..%2F..%2Fimages%2Fimg_1.png)
 
 ### 2. 通过token获取用户信息
 
