@@ -2,7 +2,6 @@ package user
 
 import (
 	"context"
-
 	"github.com/sunflower10086/TikTok/http/internal/pkg/result"
 )
 
@@ -13,8 +12,8 @@ type Service interface {
 }
 
 type LoginRequest struct {
-	Username string `json:"username" binding:"required" form:"username"`
-	Password string `json:"password" binding:"required" form:"password"`
+	Username string `json:"username" binding:"required,email" form:"username"`
+	Password string `json:"password" binding:"required,min=6,alphanum" form:"password"`
 }
 
 type LoginResponse struct {
@@ -24,8 +23,8 @@ type LoginResponse struct {
 }
 
 type RegisterRequest struct {
-	Username string `json:"username" binding:"required" form:"username"` // 登录用户名
-	Password string `json:"password" binding:"required" form:"password"` // 登录密码
+	Username string `json:"username" binding:"required,email" form:"username"`          // 登录用户名
+	Password string `json:"password" binding:"required,min=6,alphanum" form:"password"` // 登录密码
 }
 
 type RegisterResponse struct {
