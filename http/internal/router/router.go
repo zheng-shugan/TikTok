@@ -10,10 +10,10 @@ func Init(r *gin.Engine) {
 	// noAuth
 	noAuthRouter := r.Group("/douyin")
 	{
-		noAuthRouter.POST("/user/register", user.Register)
-		noAuthRouter.POST("/user/login", user.Login)
+		noAuthRouter.POST("/user/register/", user.Register)
+		noAuthRouter.POST("/user/login/", user.Login)
 		noAuthRouter.POST("/publish/action/", video.PublishAction)
-		noAuthRouter.GET("/feed", video.GetFeedVideo)
+		noAuthRouter.GET("/feed/", video.GetFeedVideo)
 	}
 
 	// 加的auth.JwtAuthMiddleware()是一个登录验证的中间件

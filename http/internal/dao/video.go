@@ -14,6 +14,7 @@ func QueryPublishList(ctx context.Context, userID int64) ([]*video.Video, error)
 	videos := make([]*models.Video, 0) // 数据层
 	videos2 := make([]*video.Video, 0) // 业务层
 	conn := db.GetDB().WithContext(ctx)
+
 	// 查询发布列表
 	err := conn.Find(&videos, "author_id = ?", userID).Error
 	if err != nil {
@@ -34,6 +35,7 @@ func QueryFeedVideo(ctx context.Context, limit int, latestTime int64) ([]*video.
 	videos := make([]*models.Video, limit) // 数据层model
 	videos2 := make([]*video.Video, limit) // 业务层数据
 	conn := db.GetDB().WithContext(ctx)
+
 	// 返回按投稿时间倒序的视频列表，视频数由服务端控制，单次最多30个
 	err := conn.Limit(limit).Order("create_time desc").Find(&videos, "create_time <= ?", latestTime).Error
 	if err != nil {

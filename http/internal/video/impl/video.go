@@ -65,7 +65,7 @@ func GetFeedVideo(ctx context.Context, req *video.GetFeedVideoReq) (*video.GetFe
 
 	var nextTime *int64 = nil
 	if len(videos) > 0 {
-		nextTime = &(*videos[len(videos)-1]).PublishTime
+		nextTime = &(videos[len(videos)-1]).PublishTime
 	}
 
 	return &video.GetFeedVideoResp{
