@@ -32,27 +32,30 @@ func strToint(s *string) (int64, error) {
 	return int64(number), nil
 }
 
+// FIXME: 修改实现
 func MapUser(modelUser *models.User) (*video.User, error) {
-	if modelUser == nil {
-		return nil, errors.New("modelUser-to-implUser: 数据为空")
-	}
+	//if modelUser == nil {
+	//	return nil, errors.New("modelUser-to-implUser: 数据为空")
+	//}
+	//
+	//totalFavorited, err := strToint(&modelUser.TotalFavorited)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//
+	//return &video.User{
+	//	ID:              modelUser.ID,
+	//	Name:            modelUser.UserName,
+	//	FollowCount:     modelUser.FollowCount,
+	//	FollowerCount:   modelUser.FollowerCount,
+	//	IsFollow:        modelUser.IsFollow,
+	//	Avatar:          modelUser.Avatar,
+	//	BackgroundImage: modelUser.BackgroundImage,
+	//	Signature:       modelUser.Signature,
+	//	TotalFavorited:  totalFavorited,
+	//	WorkCount:       modelUser.WorkCount,
+	//	FavoriteCount:   modelUser.FavoriteCount,
+	//}, nil
 
-	totalFavorited, err := strToint(&modelUser.TotalFavorited)
-	if err != nil {
-		return nil, err
-	}
-
-	return &video.User{
-		ID:              modelUser.ID,
-		Name:            modelUser.UserName,
-		FollowCount:     modelUser.FollowCount,
-		FollowerCount:   modelUser.FollowerCount,
-		IsFollow:        modelUser.IsFollow,
-		Avatar:          modelUser.Avatar,
-		BackgroundImage: modelUser.BackgroundImage,
-		Signature:       modelUser.Signature,
-		TotalFavorited:  totalFavorited,
-		WorkCount:       modelUser.WorkCount,
-		FavoriteCount:   modelUser.FavoriteCount,
-	}, nil
+	return nil, nil
 }

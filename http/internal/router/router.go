@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/sunflower10086/TikTok/http/internal/middleware"
 	user "github.com/sunflower10086/TikTok/http/internal/user/http"
 	video "github.com/sunflower10086/TikTok/http/internal/video/http"
 )
@@ -16,10 +17,10 @@ func Init(r *gin.Engine) {
 		noAuthRouter.GET("/feed/", video.GetFeedVideo)
 	}
 
-	// 加的auth.JwtAuthMiddleware()是一个登录验证的中间件
-	// withAuthRouter := g.Group("/douyin", auth.JwtAuthMiddleware())
-	// {
-	// 	withAuthRouter.GET("/user/", u.GetInfoHandler) // 获取用户信息
-	//  withAuthRouter.GET("/publish/list", video.GetPublishList)
-	// }
+	// 加的middleware.JWTAuthMiddlewareQuery()是一个登录验证的中间件
+	withAuthRouter := r.Group("/douyin", middleware.JWTAuthMiddlewareQuery())
+	{
+		withAuthRouter.GET("/test/", user.Test) // 获取用户信息
+		withAuthRouter.GET("/publish/list/", video.GetPublishList)
+	}
 }
