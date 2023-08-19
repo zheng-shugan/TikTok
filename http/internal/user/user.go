@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"github.com/sunflower10086/TikTok/http/internal/models"
 	"github.com/sunflower10086/TikTok/http/internal/pkg/result"
 )
 
@@ -34,12 +35,12 @@ type RegisterResponse struct {
 }
 
 type GetInfoRequest struct {
-	UserID string `json:"user_id" binding:"required" query:"user_id"` // 用户id
+	UserID uint64 `json:"user_id" binding:"required" query:"user_id"` // 用户id
 }
 
 type GetInfoResponse struct {
 	result.Response
-	User *User `json:"user"` // 用户信息
+	User *models.User `json:"user"` // 用户信息
 }
 
 // User
