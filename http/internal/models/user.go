@@ -1,9 +1,5 @@
 package models
 
-import (
-	"gorm.io/gorm"
-)
-
 // User 用户的model，与数据库保持一致
 //type User struct {
 //	ID              int64  `json:"id"`
@@ -26,7 +22,7 @@ import (
 //}
 
 type User struct {
-	gorm.Model
+	CustomBaseModel
 	Username        string `gorm:"type:varchar(255);not null;unique" json:"username" binding:"required"`
 	Password        string `gorm:"type:varchar(255);not null" json:"password" binding:"required"`
 	Avatar          string `gorm:"type:varchar(255)" json:"avatar"`
