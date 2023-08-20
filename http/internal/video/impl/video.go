@@ -2,7 +2,6 @@ package impl
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"time"
 
@@ -11,20 +10,14 @@ import (
 	"github.com/sunflower10086/TikTok/http/config"
 	"github.com/sunflower10086/TikTok/http/internal/dao"
 	"github.com/sunflower10086/TikTok/http/internal/pkg/jwt"
+	"github.com/sunflower10086/TikTok/http/internal/pkg/oss"
 	"github.com/sunflower10086/TikTok/http/internal/pkg/oss/aliyun"
 	"github.com/sunflower10086/TikTok/http/internal/pkg/result"
 	"github.com/sunflower10086/TikTok/http/internal/video"
 )
 
 const (
-	B  = 1 << 3
-	KB = B << 10
-	MB = KB << 10
-)
-
-const (
-	LIMIT     = 30 //返回的视频数
-	MAX_VIDEO = 10 * MB
+	LIMIT = 30 //返回的视频数
 )
 
 func GetFeedVideo(ctx context.Context, req *video.GetFeedVideoReq) (*video.GetFeedVideoResp, error) {
@@ -82,7 +75,7 @@ func PublishAction(ctx *gin.Context, req *video.PublishRequest) (*video.PublishR
 
 	ossConf := config.C().Oss
 
-	// var uploader oss.Uploader
+	var uploader oss.Uploader
 
 	uploader, err := aliyun.NewAliOssStore(ossConf)
 	if err != nil {
@@ -94,9 +87,7 @@ func PublishAction(ctx *gin.Context, req *video.PublishRequest) (*video.PublishR
 		return nil, err
 	}
 
-	log.Println(downURL)
-	fmt.Println(downURL)
-	userId := ctx.GetInt64("user_id")
+	userId := ctx.GetInt64("userID")
 
 	err = dao.SaveVideo(ctx, downURL, req.Title, userId)
 	if err != nil {

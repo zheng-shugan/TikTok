@@ -2,12 +2,12 @@ package db
 
 import (
 	"fmt"
-	"github.com/sunflower10086/TikTok/http/internal/models"
-	"gorm.io/gorm/schema"
 	"log"
 	"os"
-	"sync"
 	"time"
+
+	"github.com/sunflower10086/TikTok/http/internal/models"
+	"gorm.io/gorm/schema"
 
 	config "github.com/sunflower10086/TikTok/http/config"
 	"gorm.io/driver/mysql"
@@ -16,8 +16,7 @@ import (
 )
 
 var (
-	db   *gorm.DB
-	once sync.Once
+	db *gorm.DB
 )
 
 func GetDB() *gorm.DB {
@@ -90,7 +89,7 @@ func Init() error {
 // 自动迁移数据库，如果没有表则自动创建
 func autoMigrateDB(db *gorm.DB) error {
 	// 创建User表
-	err := db.AutoMigrate(&models.User{})
+	err := db.AutoMigrate(&models.User{}, &models.Video{})
 
 	if err != nil {
 		return err
