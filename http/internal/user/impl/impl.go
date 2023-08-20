@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"github.com/sunflower10086/TikTok/http/internal/dao"
 	"github.com/sunflower10086/TikTok/http/internal/models"
+	"github.com/sunflower10086/TikTok/http/internal/pkg/result"
 	"github.com/sunflower10086/TikTok/http/internal/user"
 	"github.com/sunflower10086/TikTok/http/pkg/crypto"
 	"github.com/sunflower10086/TikTok/http/pkg/jwt"
+	"log"
 )
 
 func Login(ctx context.Context, request *user.LoginRequest) (*user.LoginResponse, error) {
@@ -82,6 +84,19 @@ func Register(ctx context.Context, request *user.RegisterRequest) (*user.Registe
 }
 
 func GetInfo(ctx context.Context, request *user.GetInfoRequest) (*user.GetInfoResponse, error) {
-	//TODO implement me
-	panic("implement me")
+
+	userID := request.UserID
+
+	userInfo, err := dao.GetUserByID(userID)
+
+	if err != nil {
+		log.Println(err.Error())
+		return nil, err
+	}
+
+	return &user.GetInfoResponse{
+		User:     userInfo,
+		Response: result.Response{StatusCode: result.SuccessCode},
+	}, nil
+
 }
