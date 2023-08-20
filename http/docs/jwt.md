@@ -2,7 +2,7 @@
 
 ### 1. 配置保护路由
 
-[router.go](..%2Frouter%2Frouter.go)
+[router.go](../internal/router/router.go)
 
 所有在withAuthRouter中的路由都会被保护，需要登录才能访问
 
@@ -10,7 +10,7 @@
 // 加的middleware.JwtAuthMiddleware()是一个登录验证的中间件
 withAuthRouter := r.Group("/douyin", middleware.JWTAuthMiddleware())
 {
-    withAuthRouter.GET("/test/", user.Test) // 获取用户信息
+withAuthRouter.GET("/test/", user.Test) // 获取用户信息
 }
 ```
 
@@ -24,12 +24,12 @@ withAuthRouter := r.Group("/douyin", middleware.JWTAuthMiddleware())
 
 ```go
 func Test(ctx *gin.Context) {
-	// 通过token获取用户信息
-	userId, username := token.GetUserIDAndUsernameFromCtx(ctx)
+// 通过token获取用户信息
+userId, username := token.GetUserIDAndUsernameFromCtx(ctx)
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"userId":   userId,
-		"username": username,
-	})
+ctx.JSON(http.StatusOK, gin.H{
+"userId":   userId,
+"username": username,
+})
 }
 ```
