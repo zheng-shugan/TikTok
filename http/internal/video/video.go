@@ -49,7 +49,7 @@ type Video struct {
 	CommentCount  int64  `json:"comment_count"`
 	IsFavorite    bool   `json:"is_favorite"`
 	Title         string `json:"title"`
-	PublishTime   int64  // TODO： 命名待确定
+	PublishTime   int64
 }
 
 type User struct {

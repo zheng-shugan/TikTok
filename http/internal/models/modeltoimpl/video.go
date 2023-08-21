@@ -18,8 +18,8 @@ func MapVideo(modelVideo *models.Video) (*video.Video, error) {
 		CoverUrl:      modelVideo.CoverURL,
 		FavoriteCount: modelVideo.FavoriteCount,
 		CommentCount:  modelVideo.CommentCount,
-		//IsFavorite:    modelVideo.IsFavorite,
-		Title: modelVideo.Title,
-		//PublishTime:   modelVideo.CreateTime,
+		IsFavorite:    false, // 默认没有被点赞
+		Title:         modelVideo.Title,
+		PublishTime:   modelVideo.CreatedAt.Unix(),
 	}, nil
 }
