@@ -110,6 +110,6 @@ func SaveVideo(ctx context.Context, downUrl, title string, userId int64) error {
 	video.AuthorID = userId
 	video.PlayURL = downUrl
 	video.Title = title
-	video.CreateTime = time.Now().Unix()
+	video.CreatedAt = time.Now()
 	return db.GetDB().Create(&video).Error
 }
