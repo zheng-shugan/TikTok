@@ -89,7 +89,7 @@ func Init() error {
 // 自动迁移数据库，如果没有表则自动创建
 func autoMigrateDB(db *gorm.DB) error {
 	// 创建User表
-	err := db.AutoMigrate(&models.User{}, &models.Video{})
+	err := db.AutoMigrate(&models.User{}, &models.Video{}, &models.Comment{})
 
 	if err != nil {
 		return err

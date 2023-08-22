@@ -13,7 +13,6 @@ func Init(r *gin.Engine) {
 	{
 		noAuthRouter.POST("/user/register/", user.Register)
 		noAuthRouter.POST("/user/login/", user.Login)
-
 		noAuthRouter.POST("/publish/action/", video.PublishAction)
 		noAuthRouter.GET("/feed/", video.GetFeedVideo)
 	}
@@ -22,5 +21,6 @@ func Init(r *gin.Engine) {
 	withAuthRouter := r.Group("/douyin", middleware.JWTAuthMiddlewareQuery())
 	{
 		withAuthRouter.GET("/test/", user.Test) // 获取用户信息
+		withAuthRouter.GET("/publish/list/", video.GetPublishList)
 	}
 }
