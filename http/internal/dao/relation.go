@@ -20,7 +20,8 @@ func FindRelation(userId int64, followerId int64) (*models.Follow, error) {
 		if "record not found" == err.Error() {
 			return nil, nil
 		}
-		log.Panicln(err.Error())
+		log.Println(err.Error())
+		return nil, err
 	}
 	return &follow, nil
 }
@@ -57,4 +58,16 @@ func GetFollowerList(userId int64) ([]*models.User, error) {
 	}
 
 	return followerList, nil
+}
+
+// CreateRelation 创建一条 follow 记录
+func CreateRelation(userId int64, followerId int64) (bool, error) {
+	follow := models.Follow{UserId: userId, FollowerId: followerId, Type: models.RelationActive}
+
+	err := db.GetDB().Create(&follow).Error
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
 }
