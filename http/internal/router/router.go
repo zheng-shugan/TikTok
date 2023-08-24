@@ -3,6 +3,7 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/sunflower10086/TikTok/http/internal/middleware"
+	relation "github.com/sunflower10086/TikTok/http/internal/relation/http"
 	user "github.com/sunflower10086/TikTok/http/internal/user/http"
 	video "github.com/sunflower10086/TikTok/http/internal/video/http"
 )
@@ -22,5 +23,9 @@ func Init(r *gin.Engine) {
 	{
 		withAuthRouter.GET("/test/", user.Test) // 获取用户信息
 		withAuthRouter.GET("/publish/list/", video.GetPublishList)
+		withAuthRouter.POST("/relation/action", relation.RelationAction)
+		withAuthRouter.POST("/relation/follow/list/", relation.FollowList)
+		withAuthRouter.POST("/relation/follower/list/", relation.FollowerList)
+		withAuthRouter.POST("/relation/friend/list/", relation.FriendList)
 	}
 }
