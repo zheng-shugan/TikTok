@@ -24,3 +24,37 @@ func FindRelation(userId int64, followerId int64) (*models.Follow, error) {
 	}
 	return &follow, nil
 }
+
+// GetFollowerIds 根据用户 id 获取粉丝的 id 列表
+func GetFollowerIds(userId int64) ([]int64, error) {
+	idList := make([]int64, 0)
+
+	err := db.GetDB().
+		Where("user_id = ?", userId).
+		Take(&idList).Error
+
+	if err != nil {
+		if "record not found" == err.Error() {
+			return nil, nil
+		}
+		log.Panicln(err.Error())
+	}
+
+	return idList, nil
+}
+
+// GetFollowerList 根据用户 id 获取粉丝列表
+func GetFollowerList(userId int64) ([]*models.User, error) {
+	followerList := make([]*models.User, 0)
+	followerIds, _ := GetFollowerIds(userId)
+
+	err := db.GetDB().
+		Where("user_id IN ?", followerIds).
+		Take(&followerList).Error
+
+	if err != nil {
+		log.Panicln(err.Error())
+	}
+
+	return followerList, nil
+}
