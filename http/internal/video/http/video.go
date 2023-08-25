@@ -1,6 +1,7 @@
 package http
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -55,10 +56,10 @@ func GetFeedVideo(ctx *gin.Context) {
 }
 
 func PublishAction(ctx *gin.Context) {
-	//SaveUploadedFile上传表单文件到指定的路径
+	//	SaveUploadedFile上传表单文件到指定的路径
 	// ctx.SaveUploadedFile(f, "./"+f.Filename)
 	var publishParam video.PublishRequest
-
+	fmt.Println(ctx.Query("token"))
 	// 绑定参数
 	if err := ctx.ShouldBind(&publishParam); err != nil {
 		// msg := result.ParamErrMsg

@@ -1,9 +1,11 @@
 package http
 
 import (
+	"fmt"
+	"net/http"
+
 	"github.com/sunflower10086/TikTok/http/internal/pkg/token"
 	"github.com/sunflower10086/TikTok/http/internal/user/helper"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sunflower10086/TikTok/http/internal/pkg/result"
@@ -58,6 +60,7 @@ func Register(ctx *gin.Context) {
 
 	// 参数校验
 	if err := ctx.ShouldBind(&registerParam); err != nil {
+		fmt.Println(err)
 		errorMessages, done := helper.HandleUserCheckError(ctx, err)
 		if done {
 			return
@@ -83,6 +86,7 @@ func Register(ctx *gin.Context) {
 				StatusMsg:  &errMsg,
 			},
 		})
+		return
 	}
 
 	ctx.JSON(http.StatusOK, user.RegisterResponse{
@@ -97,6 +101,7 @@ func GetUserInfo(ctx *gin.Context) {
 
 	// 参数校验
 	if err := ctx.ShouldBind(&getUserInfo); err != nil {
+		fmt.Println(err.Error())
 		msg := result.ParamErrMsg
 		ctx.JSON(http.StatusOK, user.LoginResponse{
 			Response: result.Response{
@@ -104,6 +109,7 @@ func GetUserInfo(ctx *gin.Context) {
 				StatusMsg:  &msg,
 			},
 		})
+		return
 	}
 
 	// 调用服务的接口
@@ -116,6 +122,7 @@ func GetUserInfo(ctx *gin.Context) {
 				StatusMsg:  &errMsg,
 			},
 		})
+		return
 	}
 
 	ctx.JSON(http.StatusOK, user.GetInfoResponse{

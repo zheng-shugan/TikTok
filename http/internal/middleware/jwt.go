@@ -1,11 +1,13 @@
 package middleware
 
 import (
+	"log"
+	"net/http"
+	"strings"
+
 	"github.com/gin-gonic/gin"
 	"github.com/sunflower10086/TikTok/http/internal/pkg/result"
 	"github.com/sunflower10086/TikTok/http/pkg/jwt"
-	"net/http"
-	"strings"
 )
 
 type jwtResponse struct {
@@ -73,6 +75,10 @@ func JWTAuthMiddlewareQuery() func(ctx *gin.Context) {
 		authHeader := ctx.Query("token")
 
 		if authHeader == "" {
+			authHeader = ctx.PostForm("token")
+		}
+
+		if authHeader == "" {
 			msg := "请求头中auth为空"
 			ctx.JSON(http.StatusOK, jwtResponse{
 				Response: result.Response{
@@ -100,6 +106,8 @@ func JWTAuthMiddlewareQuery() func(ctx *gin.Context) {
 		// 将当前请求的userID信息保存到请求的上下文ctx上
 		ctx.Set("userID", mc.UserID)
 		ctx.Set("username", mc.Username)
+		log.Println(ctx.Request.URL)
+		log.Println(authHeader)
 
 		ctx.Next() // 后续的处理函数可以用过c.Get("username")来获取当前请求的用户信息
 	}

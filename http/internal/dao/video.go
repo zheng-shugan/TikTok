@@ -2,6 +2,7 @@ package dao
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/sunflower10086/TikTok/http/internal/dao/db"
@@ -13,7 +14,7 @@ import (
 func QueryPublishList(ctx context.Context, userID int64) ([]*video.Video, error) {
 	videos := make([]*models.Video, 0) // 数据层
 	videos2 := make([]*video.Video, 0) // 业务层
-	var user *video.User               // 业务层
+	var user *models.User              // 业务层
 
 	conn := db.GetDB().WithContext(ctx)
 
@@ -35,7 +36,10 @@ func QueryPublishList(ctx context.Context, userID int64) ([]*video.Video, error)
 		if err != nil {
 			return nil, err
 		}
-		v3.Author = user
+		v3.Author, err = modeltoimpl.MapUser(user)
+		if err != nil {
+			return nil, err
+		}
 		videos2 = append(videos2, v3)
 	}
 
@@ -68,11 +72,13 @@ func QueryFeedVideo(ctx context.Context, limit int, latestTime int64) ([]*video.
 
 	conn := db.GetDB().WithContext(ctx)
 
+	fmt.Println(latestTime)
 	// 返回按投稿时间倒序的视频列表，视频数由服务端控制，单次最多30个
 	err := conn.Preload("User.OtherInfo").
 		Preload("User").
 		Limit(limit).Order("created_at desc").
-		Find(&videos, "created_at <= ?", time.Unix(latestTime, 0)).Error
+		Where("created_at <= ?", latestTime).
+		Find(&videos).Error
 
 	if err != nil {
 		return nil, err
@@ -136,7 +142,7 @@ func CheckIsFavorite(ctx context.Context, videos []*video.Video, userID int64) e
 	return nil
 }
 
-func CheckIsFollow(ctx context.Context, videos []*video.Video, userID int64) error {
+func CheckIsFollowVideo(ctx context.Context, videos []*video.Video, userID int64) error {
 	conn := db.GetDB().WithContext(ctx)
 
 	// 判断视频作者是否被当前用户关注
@@ -157,10 +163,14 @@ func CheckIsFollow(ctx context.Context, videos []*video.Video, userID int64) err
 }
 
 func SaveVideo(ctx context.Context, downUrl, title string, userId int64) error {
-	var video models.Video
-	video.AuthorID = userId
-	video.PlayURL = downUrl
-	video.Title = title
-	video.CreatedAt = time.Now()
-	return db.GetDB().Create(&video).Error
+	var v models.Video
+	fmt.Println(userId)
+	v.User = models.User{
+		CustomBaseModel: models.CustomBaseModel{ID: userId},
+	}
+	v.AuthorID = userId
+	v.PlayURL = downUrl
+	v.Title = title
+	v.CreatedAt = time.Now().Unix()
+	return db.GetDB().Create(&v).Error
 }

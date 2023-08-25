@@ -20,6 +20,6 @@ func MapVideo(modelVideo *models.Video) (*video.Video, error) {
 		CommentCount:  modelVideo.CommentCount,
 		IsFavorite:    false, // 默认没有被点赞
 		Title:         modelVideo.Title,
-		PublishTime:   modelVideo.CreatedAt.Unix(),
+		PublishTime:   modelVideo.CreatedAt,
 	}, nil
 }
