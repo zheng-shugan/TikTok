@@ -1,0 +1,103 @@
+syntax = "proto3";
+
+package relation;
+
+option go_package=".;relation";
+
+service relation {
+    rpc Action(ActionRequest) returns (Empty);
+    rpc FollowList(FollowListRequest) returns (FollowListResponse);
+    rpc FollowerList(FollowerListRequest) returns (FollowerListResponse);
+    rpc FriendList(FriendListRequest) returns (FriendListResponse);
+    rpc MessageChat(messageChatRequest) returns (messageChatResponse);
+    rpc MessageAction(MessageActionRequest) returns (MessageActionResponse);
+}
+
+// 关系操作， 登录用户对其他用户进行关注或取消关注
+message ActionRequest {
+  int64 to_user_id = 2; // 对方用户id
+  int32 action_type = 3; // 1-关注，2-取消关注
+}
+
+message Empty {}
+
+// 登录用户关注的所有用户列表。
+message FollowListRequest {
+  int64 user_id = 1; // 用户id
+}
+
+
+message FollowListResponse {
+  User user_list = 3; // 用户信息列表
+}
+
+message User {
+  int64 id = 1; // 用户id
+  string name = 2; // 用户名称
+  int64 follow_count = 3; // 关注总数
+  int64 follower_count = 4; // 粉丝总数
+  bool is_follow = 5; // true-已关注，false-未关注
+  string avatar = 6; //用户头像
+  string background_image = 7; //用户个人页顶部大图
+  string signature = 8; //个人简介
+  int64 total_favorited = 9; //获赞数量
+  int64 work_count = 10; //作品数量
+  int64 favorite_count = 11; //点赞数量
+}
+
+// 所有关注登录用户的粉丝列表。
+message FollowerListRequest {
+  int64 user_id = 1; // 用户id
+}
+
+message FollowerListResponse {
+  User user_list = 3; // 用户信息列表
+}
+
+// 所有关注登录用户的好友列表。
+message FriendListRequest {
+  int64 user_id = 1; // 用户id
+}
+
+message FriendListResponse {
+  FriendUser user_list = 3; // 用户列表
+}
+
+message FriendUser {
+  string message = 1; // 和该好友的最新聊天消息
+  int64 msgType = 2; // message消息的类型，0 => 当前请求用户接收的消息， 1 => 当前请求用户发送的消息
+}
+
+// <-----------  聊天接口定义  -------------->
+
+// 当前登录用户和其他指定用户的聊天消息记录
+message messageChatRequest {
+  int64 to_user_id = 2; // 对方用户id
+  int64 pre_msg_time=3;//上次最新消息的时间（新增字段-apk更新中）
+}
+
+message messageChatResponse {
+  Message message_list = 3; // 消息列表
+}
+
+message Message {
+  int64 id = 1; // 消息id
+  int64 to_user_id = 2; // 该消息接收者的id
+  int64 from_user_id =3; // 该消息发送者的id
+  string content = 4; // 消息内容
+  string create_time = 5; // 消息创建时间
+}
+
+
+// 登录用户对消息的相关操作，目前只支持消息发送
+message MessageActionRequest {
+  string token = 1; // 用户鉴权token
+  int64 to_user_id = 2; // 对方用户id
+  int32 action_type = 3; // 1-发送消息
+  string content = 4; // 消息内容
+}
+
+message MessageActionResponse {
+  int32 status_code = 1; // 状态码，0-成功，其他值-失败
+  string status_msg = 2; // 返回状态描述
+}

@@ -2,11 +2,12 @@ package helper
 
 import (
 	"errors"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/sunflower10086/TikTok/http/internal/pkg/result"
 	"github.com/sunflower10086/TikTok/http/internal/user"
-	"net/http"
 )
 
 // HandleUserCheckError 处理用户校验错误

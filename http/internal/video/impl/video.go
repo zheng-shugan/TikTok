@@ -2,6 +2,7 @@ package impl
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
@@ -12,6 +13,7 @@ import (
 	"github.com/sunflower10086/TikTok/http/internal/pkg/oss"
 	"github.com/sunflower10086/TikTok/http/internal/pkg/oss/aliyun"
 	"github.com/sunflower10086/TikTok/http/internal/pkg/result"
+	"github.com/sunflower10086/TikTok/http/internal/pkg/token"
 	"github.com/sunflower10086/TikTok/http/internal/video"
 	"github.com/sunflower10086/TikTok/http/pkg/jwt"
 )
@@ -50,7 +52,7 @@ func GetFeedVideo(ctx context.Context, req *video.GetFeedVideoReq) (*video.GetFe
 			return nil, err
 		}
 
-		err = dao.CheckIsFollow(ctx, videos, userID)
+		err = dao.CheckIsFollowVideo(ctx, videos, userID)
 		if err != nil {
 			log.Println("判断用户是否关注视频作者失败:", err)
 			return nil, err
@@ -88,7 +90,12 @@ func PublishAction(ctx *gin.Context, req *video.PublishRequest) (*video.PublishR
 		return nil, err
 	}
 
-	userId := ctx.GetInt64("userID")
+	//userId, _ := token.GetUserIDAndUsernameFromCtx(ctx)
+
+	//nowUserId, _ := token.GetUserIDAndUsernameFromCtx(ctx)
+
+	userId, username := token.GetUserIDAndUsernameFromCtx(ctx)
+	fmt.Println(userId, username)
 
 	err = dao.SaveVideo(ctx, downURL, req.Title, userId)
 	if err != nil {

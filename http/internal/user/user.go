@@ -2,14 +2,15 @@ package user
 
 import (
 	"context"
-	"github.com/sunflower10086/TikTok/http/internal/models"
+
+	"github.com/gin-gonic/gin"
 	"github.com/sunflower10086/TikTok/http/internal/pkg/result"
 )
 
 type Service interface {
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
-	GetInfo(context.Context, *GetInfoRequest) (*GetInfoResponse, error)
+	GetInfo(*gin.Context, *GetInfoRequest) (*GetInfoResponse, error)
 }
 
 type LoginRequest struct {
@@ -35,12 +36,13 @@ type RegisterResponse struct {
 }
 
 type GetInfoRequest struct {
-	UserID uint64 `json:"user_id" binding:"required" query:"user_id"` // 用户id
+	UserID uint64  `json:"user_id" query:"user_id" binding:"required" form:"user_id"` // 用户id
+	Token  *string `json:"token"`
 }
 
 type GetInfoResponse struct {
 	result.Response
-	User *models.User `json:"user"` // 用户信息
+	User *User `json:"user"` // 用户信息
 }
 
 // User
@@ -54,6 +56,6 @@ type User struct {
 	IsFollow        bool   `json:"is_follow"`        // true-已关注，false-未关注
 	Name            string `json:"name"`             // 用户名称
 	Signature       string `json:"signature"`        // 个人简介
-	TotalFavorited  string `json:"total_favorited"`  // 获赞数量
+	TotalFavorited  int64  `json:"total_favorited"`  // 获赞数量
 	WorkCount       int64  `json:"work_count"`       // 作品数
 }

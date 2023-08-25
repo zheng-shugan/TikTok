@@ -2,8 +2,10 @@ package jwt
 
 import (
 	"errors"
-	"github.com/dgrijalva/jwt-go"
+	"strings"
 	"time"
+
+	"github.com/dgrijalva/jwt-go"
 )
 
 const TokenExpireDuration = time.Hour * 2
@@ -39,6 +41,7 @@ func GenToken(userID int64, username string) (string, error) {
 
 // ParseToken 解析JWT
 func ParseToken(tokenString string) (*MyClaims, error) {
+	tokenString = strings.Replace(tokenString, "Bearer ", "", 1)
 	// 解析token
 	var mc = new(MyClaims)
 	token, err := jwt.ParseWithClaims(tokenString, mc, func(token *jwt.Token) (i interface{}, err error) {

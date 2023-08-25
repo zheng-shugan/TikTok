@@ -4,13 +4,15 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
+
+	"github.com/gin-gonic/gin"
 	"github.com/sunflower10086/TikTok/http/internal/dao"
 	"github.com/sunflower10086/TikTok/http/internal/models"
 	"github.com/sunflower10086/TikTok/http/internal/pkg/result"
 	"github.com/sunflower10086/TikTok/http/internal/user"
 	"github.com/sunflower10086/TikTok/http/pkg/crypto"
 	"github.com/sunflower10086/TikTok/http/pkg/jwt"
-	"log"
 )
 
 func Login(ctx context.Context, request *user.LoginRequest) (*user.LoginResponse, error) {
@@ -69,13 +71,13 @@ func Register(ctx context.Context, request *user.RegisterRequest) (*user.Registe
 		return nil, fmt.Errorf("创建用户错误：%w", err)
 	}
 
-	token, err := jwt.GenToken(int64(newUser.ID), newUser.Username)
+	token, err := jwt.GenToken(newUser.ID, newUser.Username)
 
 	if err != nil {
 		return nil, fmt.Errorf("生成token错误：%w", err)
 	}
 
-	userId := int64(newUser.ID)
+	userId := newUser.ID
 
 	return &user.RegisterResponse{
 		Token:  &token,
@@ -83,8 +85,7 @@ func Register(ctx context.Context, request *user.RegisterRequest) (*user.Registe
 	}, nil
 }
 
-func GetInfo(ctx context.Context, request *user.GetInfoRequest) (*user.GetInfoResponse, error) {
-
+func GetInfo(ctx *gin.Context, request *user.GetInfoRequest) (*user.GetInfoResponse, error) {
 	userID := request.UserID
 
 	userInfo, err := dao.GetUserByID(userID)
@@ -94,8 +95,22 @@ func GetInfo(ctx context.Context, request *user.GetInfoRequest) (*user.GetInfoRe
 		return nil, err
 	}
 
+	_user := user.User{
+		Avatar:          userInfo.Avatar,
+		BackgroundImage: userInfo.BackgroundImage,
+		FavoriteCount:   userInfo.OtherInfo.FavoriteCount,
+		FollowCount:     userInfo.OtherInfo.FollowCount,
+		FollowerCount:   userInfo.OtherInfo.FollowerCount,
+		ID:              userInfo.ID,
+		IsFollow:        dao.CheckIsFollowUser(ctx, int64(userID)),
+		Name:            userInfo.Username,
+		Signature:       userInfo.Signature,
+		TotalFavorited:  userInfo.OtherInfo.TotalFavorited,
+		WorkCount:       userInfo.OtherInfo.WorkCount,
+	}
+
 	return &user.GetInfoResponse{
-		User:     userInfo,
+		User:     &_user,
 		Response: result.Response{StatusCode: result.SuccessCode},
 	}, nil
 
