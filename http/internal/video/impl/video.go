@@ -23,9 +23,10 @@ const (
 func GetFeedVideo(ctx context.Context, req *video.GetFeedVideoReq) (*video.GetFeedVideoResp, error) {
 	// latest_time默认为当前时间，若请求参数不为空则更新
 	latestTime := time.Now().Unix()
-	if req.LatestTime != 0 {
+	if req.LatestTime != 0 && req.LatestTime < 253402300799 { // 253402300799对应10000-01-01 07:59:59 +0800 CST
 		latestTime = req.LatestTime
 	}
+	log.Println(time.Unix(latestTime, 0))
 
 	// 获取视频流
 	videos, err := dao.QueryFeedVideo(ctx, LIMIT, latestTime)
