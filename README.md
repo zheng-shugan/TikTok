@@ -15,6 +15,12 @@ server:
     mode: "dev"
     host: "0.0.0.0" # 局域网内部允许访问
     port: "3000"
+  interaction:
+    host: "0.0.0.0"
+    port: "3001"
+  relation:
+    host: "0.0.0.0"
+    port: "3002"
 #之后的微服务会再添加一些服务
 
 # log配置可以先不管，目前还没配置项目的log
