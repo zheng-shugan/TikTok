@@ -52,7 +52,7 @@ func GetFeedVideo(ctx context.Context, req *video.GetFeedVideoReq) (*video.GetFe
 			return nil, err
 		}
 
-		err = dao.CheckIsFollowVideo(ctx, videos, userID)
+		err = dao.CheckIsFollow(ctx, videos, userID)
 		if err != nil {
 			log.Println("判断用户是否关注视频作者失败:", err)
 			return nil, err

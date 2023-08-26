@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/sunflower10086/TikTok/interaction/internal/svc"
-	___interaction"github.com/sunflower10086/TikTok/interaction/pb"
+	___interaction "github.com/sunflower10086/TikTok/interaction/pb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -25,6 +25,7 @@ func NewFavoriteActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Fa
 
 func (l *FavoriteActionLogic) FavoriteAction(in *___interaction.FavoriteActionReq) (*___interaction.Empty, error) {
 	// todo: add your logic here and delete this line
+	//userID := l.ctx.Value("userID") // 根据上下文获取userID
 
 	return &___interaction.Empty{}, nil
 }

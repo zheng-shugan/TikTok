@@ -11,6 +11,7 @@ import (
 	"github.com/sunflower10086/TikTok/http/internal/video"
 )
 
+// 查询发布列表
 func QueryPublishList(ctx context.Context, userID int64) ([]*video.Video, error) {
 	videos := make([]*models.Video, 0) // 数据层
 	videos2 := make([]*video.Video, 0) // 业务层
@@ -46,6 +47,7 @@ func QueryPublishList(ctx context.Context, userID int64) ([]*video.Video, error)
 	return videos2, nil
 }
 
+// 计算视频的总点赞数
 func CalFavoriteCount(ctx context.Context, videoID int64) (int64, error) {
 	conn := db.GetDB().WithContext(ctx)
 	var count int64
@@ -56,6 +58,7 @@ func CalFavoriteCount(ctx context.Context, videoID int64) (int64, error) {
 	return count, nil
 }
 
+// 计算视频的总评论数
 func CalCommentCount(ctx context.Context, videoID int64) (int64, error) {
 	conn := db.GetDB().WithContext(ctx)
 	var count int64
@@ -66,6 +69,7 @@ func CalCommentCount(ctx context.Context, videoID int64) (int64, error) {
 	return count, nil
 }
 
+// 获取视频流
 func QueryFeedVideo(ctx context.Context, limit int, latestTime int64) ([]*video.Video, error) {
 	videos := make([]*models.Video, limit) // 数据层
 	videos2 := make([]*video.Video, 0)     // 业务层
@@ -122,10 +126,10 @@ func QueryFeedVideo(ctx context.Context, limit int, latestTime int64) ([]*video.
 	return videos2, nil
 }
 
+// 判断当前视频是否被当前用户点赞
 func CheckIsFavorite(ctx context.Context, videos []*video.Video, userID int64) error {
 	conn := db.GetDB().WithContext(ctx)
 
-	//判断当前视频是否被当前用户点赞
 	for _, v := range videos {
 		var count int64 = 0
 		err := conn.Table("user_favorite").Where("user_id = ? and video_id = ?", userID, v.ID).Count(&count).Error
@@ -142,10 +146,10 @@ func CheckIsFavorite(ctx context.Context, videos []*video.Video, userID int64) e
 	return nil
 }
 
-func CheckIsFollowVideo(ctx context.Context, videos []*video.Video, userID int64) error {
+// 判断视频作者是否被当前用户关注
+func CheckIsFollow(ctx context.Context, videos []*video.Video, userID int64) error {
 	conn := db.GetDB().WithContext(ctx)
 
-	// 判断视频作者是否被当前用户关注
 	for _, v := range videos {
 		var count int64 = 0
 		err := conn.Table("user_follower").Where("user_id = ? and follower_id = ?", v.Author.ID, userID).Count(&count).Error
@@ -162,6 +166,7 @@ func CheckIsFollowVideo(ctx context.Context, videos []*video.Video, userID int64
 	return nil
 }
 
+// 保存用户发布的视频
 func SaveVideo(ctx context.Context, downUrl, title string, userId int64) error {
 	var v models.Video
 	fmt.Println(userId)
