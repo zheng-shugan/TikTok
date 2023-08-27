@@ -3,8 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 
 	"github.com/sunflower10086/TikTok/interaction/internal/config"
+	"github.com/sunflower10086/TikTok/interaction/internal/dao/db"
 	"github.com/sunflower10086/TikTok/interaction/internal/server"
 	"github.com/sunflower10086/TikTok/interaction/internal/svc"
 	___interaction "github.com/sunflower10086/TikTok/interaction/pb"
@@ -25,9 +27,14 @@ func main() {
 	conf.MustLoad(*configFile, &c)
 	ctx := svc.NewServiceContext(c)
 
+	err := db.Init(&c)
+	if err != nil {
+		log.Println("数据库连接失败!")
+		return
+	}
+
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
 		___interaction.RegisterInteractionServer(grpcServer, server.NewInteractionServer(ctx))
-
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
 		}

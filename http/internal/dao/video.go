@@ -29,10 +29,23 @@ func QueryPublishList(ctx context.Context, userID int64) ([]*video.Video, error)
 	if err != nil {
 		return nil, err
 	}
+	// 获取实时User信息
+	err = RealTimeUser(ctx, user)
+	if err != nil {
+		return nil, err
+	}
 
 	// 将数据层映射到业务层
 	for _, v := range videos {
 		var v3 *video.Video // 业务层
+
+		// 获取实时Video信息
+		err = RealTimeVideo(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+
+		// 映射到业务层
 		v3, err = modeltoimpl.MapVideo(v)
 		if err != nil {
 			return nil, err
@@ -47,28 +60,6 @@ func QueryPublishList(ctx context.Context, userID int64) ([]*video.Video, error)
 	return videos2, nil
 }
 
-// 计算视频的总点赞数
-func CalFavoriteCount(ctx context.Context, videoID int64) (int64, error) {
-	conn := db.GetDB().WithContext(ctx)
-	var count int64
-	err := conn.Table("user_favorite").Where("video_id = ?", videoID).Count(&count).Error
-	if err != nil {
-		return 0, err
-	}
-	return count, nil
-}
-
-// 计算视频的总评论数
-func CalCommentCount(ctx context.Context, videoID int64) (int64, error) {
-	conn := db.GetDB().WithContext(ctx)
-	var count int64
-	err := conn.Model(&models.Comment{}).Where("video_id = ?", videoID).Count(&count).Error
-	if err != nil {
-		return 0, err
-	}
-	return count, nil
-}
-
 // 获取视频流
 func QueryFeedVideo(ctx context.Context, limit int, latestTime int64) ([]*video.Video, error) {
 	videos := make([]*models.Video, limit) // 数据层
@@ -76,7 +67,6 @@ func QueryFeedVideo(ctx context.Context, limit int, latestTime int64) ([]*video.
 
 	conn := db.GetDB().WithContext(ctx)
 
-	fmt.Println(latestTime)
 	// 返回按投稿时间倒序的视频列表，视频数由服务端控制，单次最多30个
 	err := conn.Preload("User.OtherInfo").
 		Preload("User").
@@ -97,23 +87,22 @@ func QueryFeedVideo(ctx context.Context, limit int, latestTime int64) ([]*video.
 			continue
 		}
 
-		favoriteCount, err := CalFavoriteCount(ctx, v.ID) // 统计视频点赞数
+		// 获取实时的video信息和User信息
+		err = RealTimeVideo(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = RealTimeUser(ctx, &v.User)
 		if err != nil {
 			return nil, err
 		}
 
-		commentCount, err := CalCommentCount(ctx, v.ID) // 统计视频评论数
-		if err != nil {
-			return nil, err
-		}
-
-		v.FavoriteCount = favoriteCount
-		v.CommentCount = commentCount
-
+		// 映射到业务层
 		v3, err = modeltoimpl.MapVideo(v)
 		if err != nil {
 			return nil, err
 		}
+
 		user2, err = modeltoimpl.MapUser(&v.User)
 		if err != nil {
 			return nil, err
@@ -126,45 +115,45 @@ func QueryFeedVideo(ctx context.Context, limit int, latestTime int64) ([]*video.
 	return videos2, nil
 }
 
-// 判断当前视频是否被当前用户点赞
-func CheckIsFavorite(ctx context.Context, videos []*video.Video, userID int64) error {
-	conn := db.GetDB().WithContext(ctx)
-
-	for _, v := range videos {
-		var count int64 = 0
-		err := conn.Table("user_favorite").Where("user_id = ? and video_id = ?", userID, v.ID).Count(&count).Error
-		if err != nil {
-			return err
-		}
-		if count != 0 {
-			v.IsFavorite = true
-		} else {
-			v.IsFavorite = false
-		}
-	}
-
-	return nil
-}
-
-// 判断视频作者是否被当前用户关注
-func CheckIsFollow(ctx context.Context, videos []*video.Video, userID int64) error {
-	conn := db.GetDB().WithContext(ctx)
-
-	for _, v := range videos {
-		var count int64 = 0
-		err := conn.Table("user_follower").Where("user_id = ? and follower_id = ?", v.Author.ID, userID).Count(&count).Error
-		if err != nil {
-			return err
-		}
-		if count != 0 {
-			v.Author.IsFollow = true
-		} else {
-			v.Author.IsFollow = false
-		}
-	}
-
-	return nil
-}
+//// 判断当前视频是否被当前用户点赞
+//func CheckIsFavorite(ctx context.Context, videos []*video.Video, userID int64) error {
+//	conn := db.GetDB().WithContext(ctx)
+//
+//	for _, v := range videos {
+//		var count int64 = 0
+//		err := conn.Table("user_favorite").Where("user_id = ? and video_id = ?", userID, v.ID).Count(&count).Error
+//		if err != nil {
+//			return err
+//		}
+//		if count != 0 {
+//			v.IsFavorite = true
+//		} else {
+//			v.IsFavorite = false
+//		}
+//	}
+//
+//	return nil
+//}
+//
+//// 判断视频作者是否被当前用户关注
+//func CheckIsFollow(ctx context.Context, videos []*video.Video, userID int64) error {
+//	conn := db.GetDB().WithContext(ctx)
+//
+//	for _, v := range videos {
+//		var count int64 = 0
+//		err := conn.Table("user_follower").Where("user_id = ? and follower_id = ?", v.Author.ID, userID).Count(&count).Error
+//		if err != nil {
+//			return err
+//		}
+//		if count != 0 {
+//			v.Author.IsFollow = true
+//		} else {
+//			v.Author.IsFollow = false
+//		}
+//	}
+//
+//	return nil
+//}
 
 // 保存用户发布的视频
 func SaveVideo(ctx context.Context, downUrl, title string, userId int64) error {

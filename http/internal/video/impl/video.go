@@ -3,13 +3,13 @@ package impl
 import (
 	"context"
 	"fmt"
+	"github.com/sunflower10086/TikTok/http/internal/dao"
 	"log"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/sunflower10086/TikTok/http/config"
-	"github.com/sunflower10086/TikTok/http/internal/dao"
 	"github.com/sunflower10086/TikTok/http/internal/pkg/oss"
 	"github.com/sunflower10086/TikTok/http/internal/pkg/oss/aliyun"
 	"github.com/sunflower10086/TikTok/http/internal/pkg/result"
@@ -46,16 +46,22 @@ func GetFeedVideo(ctx context.Context, req *video.GetFeedVideoReq) (*video.GetFe
 			return nil, err
 		}
 
-		err = dao.CheckIsFavorite(ctx, videos, userID)
-		if err != nil {
-			log.Println("判断用户是否给视频点赞失败:", err)
-			return nil, err
-		}
+		for _, v := range videos {
+			check, err := dao.CheckIsFavorite(ctx, v.ID, userID)
+			if err != nil {
+				log.Println("判断用户是否给视频点赞失败:", err)
+				return nil, err
+			}
 
-		err = dao.CheckIsFollow(ctx, videos, userID)
-		if err != nil {
-			log.Println("判断用户是否关注视频作者失败:", err)
-			return nil, err
+			v.IsFavorite = check
+
+			check, err = dao.CheckIsFollow(ctx, v.Author.ID, userID)
+			if err != nil {
+				log.Println("判断用户是否关注视频作者失败:", err)
+				return nil, err
+			}
+
+			v.Author.IsFollow = check
 		}
 	}
 
@@ -110,6 +116,19 @@ func PublishAction(ctx *gin.Context, req *video.PublishRequest) (*video.PublishR
 
 func GetPublishList(ctx context.Context, req *video.GetPublishListReq) (*video.GetPublishListResp, error) {
 	userID := req.UserID
+	token := req.Token
+
+	// token不为空则鉴权
+	if token != "" {
+		_, err := jwt.ParseToken(token)
+		if err != nil {
+			return &video.GetPublishListResp{
+				StatusCode: result.ParamErrCode,
+				StatusMsg:  result.ParamErrMsg,
+				VideoList:  nil,
+			}, err
+		}
+	}
 
 	// 查询发布列表
 	videos, err := dao.QueryPublishList(ctx, userID)
@@ -120,9 +139,14 @@ func GetPublishList(ctx context.Context, req *video.GetPublishListReq) (*video.G
 
 	// 默认自己不能关注自己
 	// 特判自己是否给自己的视频点赞
-	err = dao.CheckIsFavorite(ctx, videos, userID)
-	if err != nil {
-		log.Println("判断用户是否给视频点赞失败:", err)
+	for _, v := range videos {
+		check, err := dao.CheckIsFavorite(ctx, v.ID, userID)
+		if err != nil {
+			log.Println("判断用户是否给视频点赞失败:", err)
+			return nil, err
+		}
+
+		v.IsFavorite = check
 	}
 
 	return &video.GetPublishListResp{

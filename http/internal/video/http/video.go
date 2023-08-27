@@ -15,7 +15,7 @@ func GetFeedVideo(ctx *gin.Context) {
 	var latest_time int64
 	var token string
 
-	// 参数绑定
+	// 参数校验并绑定
 	latestTimeParam := ctx.Query("latest_time")
 	if len(latestTimeParam) != 0 {
 		if latestTime, err := strconv.ParseInt(latestTimeParam, 10, 64); err != nil {
@@ -98,8 +98,8 @@ func GetPublishList(ctx *gin.Context) {
 	tokenParam := ctx.Query("token")
 	userIDParam := ctx.Query("user_id")
 
-	// 参数校验
-	if tokenParam == "" || userIDParam == "" {
+	// 参数校验并绑定
+	if userIDParam == "" {
 		ctx.JSON(http.StatusOK, video.GetPublishListResp{
 			StatusCode: result.ParamErrCode,
 			StatusMsg:  result.ParamErrMsg,
