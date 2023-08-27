@@ -2,21 +2,26 @@ package rpc
 
 import (
 	"context"
+	"fmt"
+	config "github.com/sunflower10086/TikTok/http/config"
 	___relation "github.com/sunflower10086/TikTok/relation/pb"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+	"log"
 )
 
 var relationClient ___relation.RelationClient
 
 func init() {
-	//relationConf := config.C().Apps.Relation
-	//Addr := fmt.Sprintf("%s:%s", relationConf.Host, relationConf.Port)
-	//conn, err := grpc.Dial(Addr, grpc.WithBlock(), grpc.WithTransportCredentials(insecure.NewCredentials()))
-	//if err != nil {
-	//	log.Println(err)
-	//	return
-	//}
-	//
-	//relationClient = ___relation.NewRelationClient(conn)
+	relationConf := config.C().Apps.Relation
+	Addr := fmt.Sprintf("%s:%s", relationConf.Host, relationConf.Port)
+	conn, err := grpc.Dial(Addr, grpc.WithBlock(), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	relationClient = ___relation.NewRelationClient(conn)
 }
 
 func RelationAction(ctx context.Context, request *___relation.ActionRequest) error {

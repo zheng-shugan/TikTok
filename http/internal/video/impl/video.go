@@ -25,10 +25,9 @@ const (
 func GetFeedVideo(ctx context.Context, req *video.GetFeedVideoReq) (*video.GetFeedVideoResp, error) {
 	// latest_time默认为当前时间，若请求参数不为空则更新
 	latestTime := time.Now().Unix()
-	if req.LatestTime != 0 && req.LatestTime < 253402300799 { // 253402300799对应10000-01-01 07:59:59 +0800 CST
+	if req.LatestTime != 0 && req.LatestTime < 253402300799 { //前端返回错误时间戳，所以特判以下。253402300799对应10000-01-01 07:59:59 +0800 CST
 		latestTime = req.LatestTime
 	}
-	log.Println(time.Unix(latestTime, 0))
 
 	// 获取视频流
 	videos, err := dao.QueryFeedVideo(ctx, LIMIT, latestTime)
@@ -122,11 +121,8 @@ func GetPublishList(ctx context.Context, req *video.GetPublishListReq) (*video.G
 	if token != "" {
 		_, err := jwt.ParseToken(token)
 		if err != nil {
-			return &video.GetPublishListResp{
-				StatusCode: result.ParamErrCode,
-				StatusMsg:  result.ParamErrMsg,
-				VideoList:  nil,
-			}, err
+			log.Println("token失效:", err)
+			return nil, err
 		}
 	}
 

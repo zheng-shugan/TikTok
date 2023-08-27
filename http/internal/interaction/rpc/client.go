@@ -2,22 +2,26 @@ package rpc
 
 import (
 	"context"
+	"fmt"
+	config "github.com/sunflower10086/TikTok/http/config"
 	___interaction "github.com/sunflower10086/TikTok/interaction/pb"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+	"log"
 )
 
 var interactionClient ___interaction.InteractionClient
 
 func init() {
-	//relationConf := config.C().Apps.Relation
-	//Addr := fmt.Sprintf("%s:%s", relationConf.Host, relationConf.Port)
-	//conn, err := grpc.Dial(Addr, grpc.WithBlock(), grpc.WithTransportCredentials(insecure.NewCredentials()))
-	//if err != nil {
-	//	log.Println(err)
-	//	return
-	//}
-	//
-	//interactionClient = ___interaction.NewInteractionClient(conn)
+	relationConf := config.C().Apps.Relation
+	Addr := fmt.Sprintf("%s:%s", relationConf.Host, relationConf.Port)
+	conn, err := grpc.Dial(Addr, grpc.WithBlock(), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	interactionClient = ___interaction.NewInteractionClient(conn)
 }
 
 func FavoriteAction(ctx context.Context, req *___interaction.FavoriteActionReq, opts ...grpc.CallOption) error {

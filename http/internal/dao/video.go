@@ -115,46 +115,6 @@ func QueryFeedVideo(ctx context.Context, limit int, latestTime int64) ([]*video.
 	return videos2, nil
 }
 
-//// 判断当前视频是否被当前用户点赞
-//func CheckIsFavorite(ctx context.Context, videos []*video.Video, userID int64) error {
-//	conn := db.GetDB().WithContext(ctx)
-//
-//	for _, v := range videos {
-//		var count int64 = 0
-//		err := conn.Table("user_favorite").Where("user_id = ? and video_id = ?", userID, v.ID).Count(&count).Error
-//		if err != nil {
-//			return err
-//		}
-//		if count != 0 {
-//			v.IsFavorite = true
-//		} else {
-//			v.IsFavorite = false
-//		}
-//	}
-//
-//	return nil
-//}
-//
-//// 判断视频作者是否被当前用户关注
-//func CheckIsFollow(ctx context.Context, videos []*video.Video, userID int64) error {
-//	conn := db.GetDB().WithContext(ctx)
-//
-//	for _, v := range videos {
-//		var count int64 = 0
-//		err := conn.Table("user_follower").Where("user_id = ? and follower_id = ?", v.Author.ID, userID).Count(&count).Error
-//		if err != nil {
-//			return err
-//		}
-//		if count != 0 {
-//			v.Author.IsFollow = true
-//		} else {
-//			v.Author.IsFollow = false
-//		}
-//	}
-//
-//	return nil
-//}
-
 // 保存用户发布的视频
 func SaveVideo(ctx context.Context, downUrl, title string, userId int64) error {
 	var v models.Video
