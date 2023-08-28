@@ -2,7 +2,7 @@ package logic
 
 import (
 	"context"
-
+	"fmt"
 	"github.com/sunflower10086/TikTok/interaction/internal/dao"
 	"github.com/sunflower10086/TikTok/interaction/internal/svc"
 	___interaction "github.com/sunflower10086/TikTok/interaction/pb"
@@ -26,10 +26,11 @@ func NewFavoriteActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Fa
 
 func (l *FavoriteActionLogic) FavoriteAction(in *___interaction.FavoriteActionReq) (*___interaction.Empty, error) {
 	// 根据上下文获取userID
+	fmt.Println("用户发起点赞请求...")
 	v := l.ctx.Value("userID") // 此时v是any类型
 	userID := v.(int64)        // 断言成int64
 
-	// 点赞 or 取消点赞
+	//点赞 or 取消点赞
 	var err error = nil
 	if in.ActionType == 1 {
 		err = dao.AddFavorite(l.ctx, userID, in.VideoId)

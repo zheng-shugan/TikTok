@@ -12,8 +12,13 @@ import (
 
 var relationClient ___relation.RelationClient
 
-func init() {
+func Init() {
 	relationConf := config.C().Apps.Relation
+	if relationConf == nil {
+		log.Println("relationConf2为空")
+	} else {
+		log.Println("relationConf2非空")
+	}
 	Addr := fmt.Sprintf("%s:%s", relationConf.Host, relationConf.Port)
 	conn, err := grpc.Dial(Addr, grpc.WithBlock(), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {

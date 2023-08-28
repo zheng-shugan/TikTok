@@ -12,16 +12,29 @@ import (
 
 var interactionClient ___interaction.InteractionClient
 
-func init() {
+func Init() {
 	relationConf := config.C().Apps.Relation
+	if relationConf == nil {
+		log.Println("relationConf1为空")
+	} else {
+		log.Println("relationConf1非空")
+	}
 	Addr := fmt.Sprintf("%s:%s", relationConf.Host, relationConf.Port)
 	conn, err := grpc.Dial(Addr, grpc.WithBlock(), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		log.Println(err)
+		log.Println("rpc连接失败: ", err)
 		return
+	} else {
+		log.Println("rpc连接成功")
 	}
 
 	interactionClient = ___interaction.NewInteractionClient(conn)
+
+	if interactionClient != nil {
+		log.Println("interactionClient非空")
+	} else {
+		log.Println("interactionClient为空")
+	}
 }
 
 func FavoriteAction(ctx context.Context, req *___interaction.FavoriteActionReq, opts ...grpc.CallOption) error {

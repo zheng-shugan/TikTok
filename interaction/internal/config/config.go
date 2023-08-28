@@ -1,10 +1,18 @@
 package config
 
-import "github.com/zeromicro/go-zero/zrpc"
+import (
+	"github.com/zeromicro/go-zero/zrpc"
+)
+
+var config = new(Config)
+
+func C() *Config {
+	return config
+}
 
 type Config struct {
 	zrpc.RpcServerConf
-	MySQL *MySQL `mapstructure:"mysql" `
+	MySQL *MySQL `mapstructure:"mysql"`
 }
 
 type MySQL struct {

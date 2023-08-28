@@ -19,7 +19,7 @@ type Config struct {
 
 type App struct {
 	HTTP        *Server `mapstructure:"http"`
-	Interaction *Server `mapstructure:"Interaction"`
+	Interaction *Server `mapstructure:"interaction"`
 	Relation    *Server `mapstructure:"relation"`
 }
 

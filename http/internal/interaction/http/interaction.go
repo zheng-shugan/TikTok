@@ -125,7 +125,7 @@ func GetFavoriteList(ctx *gin.Context) {
 
 	msg = "success"
 	ctx.JSON(http.StatusOK, map[string]any{
-		"status_code": result.ParamErrCode,
+		"status_code": result.SuccessCode,
 		"status_msg":  &msg,
 		"video_list":  list,
 	})
