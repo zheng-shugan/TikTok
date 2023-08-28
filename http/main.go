@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-
 	"github.com/gin-gonic/gin"
 	"github.com/sunflower10086/TikTok/http/config"
 	"github.com/sunflower10086/TikTok/http/internal/dao/db"
@@ -15,7 +14,6 @@ var configFile = flag.String("f", "etc/", "the config file")
 
 func init() {
 	config.LoadConfigFromYaml(*configFile)
-
 	db.Init()
 }
 

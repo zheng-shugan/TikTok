@@ -3,12 +3,11 @@ package rpc
 import (
 	"context"
 	"fmt"
-	"log"
-
-	"github.com/sunflower10086/TikTok/http/config"
+	config "github.com/sunflower10086/TikTok/http/config"
 	___interaction "github.com/sunflower10086/TikTok/interaction/pb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"log"
 )
 
 var interactionClient ___interaction.InteractionClient

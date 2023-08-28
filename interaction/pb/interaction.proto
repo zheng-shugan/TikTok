@@ -24,6 +24,10 @@ message FavoriteListReq {
 }
 
 message FavoriteListResp {
+  repeated Video video_list = 1; // 用户点赞视频列表
+}
+
+message Video {
     User   Author = 1;             // 视频作者信息
     int64  CommentCount = 2;   // 视频的评论总数
     string CoverURL = 3;    // 视频封面地址

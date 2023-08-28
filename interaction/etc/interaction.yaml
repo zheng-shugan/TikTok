@@ -4,3 +4,12 @@ ListenOn: 0.0.0.0:3001
 #  Hosts:
 #  - 127.0.0.1:2379
 #  Key: interaction.rpc
+
+mysql:
+  host: "127.0.0.1"
+  port: "3306"
+  user: "root"
+  password: "xty510521"
+  dbname: "tiktok"
+  max_idle_conns: 10
+  max_open_conns: 30
