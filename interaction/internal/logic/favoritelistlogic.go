@@ -35,6 +35,12 @@ func (l *FavoriteListLogic) FavoriteList(in *___interaction.FavoriteListReq) (*_
 	for _, v := range videos {
 		v.IsFavorite = true
 
+		// 默认自己不能关注自己
+		if v.Author.ID == in.UserId {
+			v.Author.IsFollow = false
+			continue
+		}
+
 		check, err := dao.CheckIsFollow(l.ctx, v.Author.ID, in.UserId)
 		if err != nil {
 			log.Println("判断用户是否关注视频作者失败:", err)

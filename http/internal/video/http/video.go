@@ -130,7 +130,7 @@ func GetPublishList(ctx *gin.Context) {
 
 	if err != nil {
 		ctx.JSON(http.StatusOK, video.GetPublishListResp{
-			StatusCode: result.ParamErrCode,
+			StatusCode: result.ServerErrCode,
 			StatusMsg:  err.Error(),
 			VideoList:  nil,
 		})

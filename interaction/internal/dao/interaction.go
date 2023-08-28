@@ -71,7 +71,6 @@ func GetFavoriteList(ctx context.Context, userID int64) ([]*interaction.Video, e
 	// 查询用户点赞视频的ID
 	err := conn.Table("user_favorite").
 		Where("user_id = ?", userID).
-		Find(&Favorite{}).
 		Pluck("video_id", &videoID).Error
 
 	if err != nil {
@@ -81,13 +80,13 @@ func GetFavoriteList(ctx context.Context, userID int64) ([]*interaction.Video, e
 	// 根据视频ID查询对应视频
 	err = conn.Preload("User.OtherInfo").
 		Preload("User").
-		Where("video_id in ?", videoID).
+		Where("id in ?", videoID).
 		Find(&videos).Error
 
 	videos2 := make([]*interaction.Video, len(videos)) // 业务层
 
 	// 获取实时的Video和User信息
-	for _, v := range videos {
+	for i, v := range videos {
 		err = RealTimeVideo(ctx, v)
 		if err != nil {
 			return nil, err
@@ -96,10 +95,10 @@ func GetFavoriteList(ctx context.Context, userID int64) ([]*interaction.Video, e
 		if err != nil {
 			return nil, err
 		}
-	}
 
-	// 数据层映射到业务层
-	modelToimpl.MapFavorite(videos, videos2)
+		// 数据层映射到业务层
+		videos2[i] = modelToimpl.MapFavorite(v)
+	}
 
 	return videos2, nil
 }

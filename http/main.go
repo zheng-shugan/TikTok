@@ -16,11 +16,12 @@ var configFile = flag.String("f", "etc/", "the config file")
 func init() {
 	config.LoadConfigFromYaml(*configFile)
 	db.Init()
-	go ___interaction.Init()
-	go ___relation.Init()
 }
 
 func main() {
+	go ___interaction.Init()
+	go ___relation.Init()
+
 	r := gin.Default()
 
 	router.Init(r)

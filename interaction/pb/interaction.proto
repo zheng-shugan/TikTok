@@ -12,8 +12,9 @@ service Interaction {
 }
 
 message FavoriteActionReq {
-  int64 VideoId = 1;
-  int64 ActionType = 2;
+  int64 UserId = 1;
+  int64 VideoId = 2;
+  int64 ActionType = 3;
 }
 
 message Empty {

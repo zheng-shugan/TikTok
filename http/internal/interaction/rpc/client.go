@@ -13,28 +13,17 @@ import (
 var interactionClient ___interaction.InteractionClient
 
 func Init() {
-	relationConf := config.C().Apps.Relation
-	if relationConf == nil {
-		log.Println("relationConf1为空")
-	} else {
-		log.Println("relationConf1非空")
-	}
+	relationConf := config.C().Apps.Interaction
+
 	Addr := fmt.Sprintf("%s:%s", relationConf.Host, relationConf.Port)
+	fmt.Println(Addr)
 	conn, err := grpc.Dial(Addr, grpc.WithBlock(), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		log.Println("rpc连接失败: ", err)
+		log.Println(err)
 		return
-	} else {
-		log.Println("rpc连接成功")
 	}
 
 	interactionClient = ___interaction.NewInteractionClient(conn)
-
-	if interactionClient != nil {
-		log.Println("interactionClient非空")
-	} else {
-		log.Println("interactionClient为空")
-	}
 }
 
 func FavoriteAction(ctx context.Context, req *___interaction.FavoriteActionReq, opts ...grpc.CallOption) error {

@@ -6,21 +6,25 @@ import (
 	"strconv"
 )
 
-func MapFavorite(v []*models.Video, v1 []*interaction.Video) {
-	for i, _ := range v {
-		v1[i].ID = v[i].ID
-		v1[i].Author.ID = v[i].User.ID
-		v1[i].Author.Name = v[i].User.Username
-		v1[i].Author.FollowCount = v[i].User.OtherInfo.FollowCount
-		v1[i].Author.FollowerCount = v[i].User.OtherInfo.FollowerCount
-		v1[i].Author.Avatar = v[i].User.Avatar
-		v1[i].Author.BackgroundImage = v[i].User.BackgroundImage
-		v1[i].Author.Signature = v[i].User.Signature
-		v1[i].Author.TotalFavorited = strconv.FormatInt(v[i].User.OtherInfo.TotalFavorited, 10)
-		v1[i].Author.WorkCount = v[i].User.OtherInfo.WorkCount
-		v1[i].Author.FavoriteCount = v[i].User.OtherInfo.FavoriteCount
-		v1[i].PlayURL = v[i].PlayURL
-		v1[i].CoverURL = v[i].CoverURL
-		v1[i].Title = v[i].Title
+func MapFavorite(v *models.Video) *interaction.Video {
+	return &interaction.Video{
+		Author: &interaction.User{
+			ID:              v.User.ID,
+			Name:            v.User.Username,
+			FollowCount:     v.User.OtherInfo.FollowCount,
+			FollowerCount:   v.User.OtherInfo.FollowerCount,
+			Avatar:          v.User.Avatar,
+			BackgroundImage: v.User.BackgroundImage,
+			Signature:       v.User.Signature,
+			TotalFavorited:  strconv.FormatInt(v.User.OtherInfo.TotalFavorited, 10),
+			WorkCount:       v.User.OtherInfo.WorkCount,
+			FavoriteCount:   v.User.OtherInfo.FavoriteCount,
+		},
+		PlayURL:       v.PlayURL,
+		CoverURL:      v.CoverURL,
+		Title:         v.Title,
+		ID:            v.ID,
+		CommentCount:  v.CommentCount,
+		FavoriteCount: v.FavoriteCount,
 	}
 }
