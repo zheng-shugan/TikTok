@@ -59,6 +59,7 @@ func RealTimeUser(ctx context.Context, u *models.User) error {
 	return nil
 }
 
+// 获取实时视频信息
 func RealTimeVideo(ctx context.Context, v *models.Video) error {
 	videoFavoriteCount, err := calVideoFavoriteCount(ctx, v.ID)
 	if err != nil {

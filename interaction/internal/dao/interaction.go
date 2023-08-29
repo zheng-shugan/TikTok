@@ -17,13 +17,21 @@ type Favorite struct {
 func AddFavorite(ctx context.Context, userID int64, videoID int64) error {
 	conn := db.GetDB().WithContext(ctx)
 
-	// 检查表中是否已存在该数据
+	// 由于userID是通过token解析出来的，因此userID如果有值则一定存在该用户
+	// 判断videoID的合法性
+	var video models.Video
+	err2 := conn.First(&video, "id = ?", videoID).Error
+	if err2 != nil {
+		return err2
+	}
+
+	// 判断是否已点赞
 	check, err := CheckIsFavorite(ctx, videoID, userID)
 	if err != nil {
 		return err
 	}
 
-	// 如果不存在则插入新数据
+	// 如果未点赞则点赞
 	if !check {
 		err = conn.Table("user_favorite").Create(&Favorite{
 			UserID:  userID,
@@ -42,13 +50,13 @@ func AddFavorite(ctx context.Context, userID int64, videoID int64) error {
 func DelFavorite(ctx context.Context, userID int64, videoID int64) error {
 	conn := db.GetDB().WithContext(ctx)
 
-	// 检查表中是否已存在该数据
+	// 判断是否已点赞
 	check, err := CheckIsFavorite(ctx, videoID, userID)
 	if err != nil {
 		return err
 	}
 
-	// 如果存在则删除数据
+	// 如果已点赞则取消点赞
 	if check {
 		err = conn.Table("user_favorite").
 			Where("user_id = ? and video_id = ?", userID, videoID).
@@ -63,7 +71,7 @@ func DelFavorite(ctx context.Context, userID int64, videoID int64) error {
 
 // 获取点赞列表
 func GetFavoriteList(ctx context.Context, userID int64) ([]*interaction.Video, error) {
-	var videoID []int64
+	var videoID []int64                // 用户点赞视频的ID
 	videos := make([]*models.Video, 0) // 数据层
 
 	conn := db.GetDB().WithContext(ctx)

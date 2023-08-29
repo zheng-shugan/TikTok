@@ -25,6 +25,7 @@ func NewFavoriteActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Fa
 func (l *FavoriteActionLogic) FavoriteAction(in *___interaction.FavoriteActionReq) (*___interaction.Empty, error) {
 	//点赞 or 取消点赞
 	var err error
+
 	if in.ActionType == 1 {
 		err = dao.AddFavorite(l.ctx, in.UserId, in.VideoId)
 	} else {

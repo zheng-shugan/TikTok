@@ -25,7 +25,7 @@ const (
 func GetFeedVideo(ctx context.Context, req *video.GetFeedVideoReq) (*video.GetFeedVideoResp, error) {
 	// latest_time默认为当前时间，若请求参数不为空则更新
 	latestTime := time.Now().Unix()
-	if req.LatestTime != 0 && req.LatestTime < 253402300799 { //前端返回错误时间戳，所以特判以下。253402300799对应10000-01-01 07:59:59 +0800 CST
+	if req.LatestTime != 0 && req.LatestTime < 253402300799 { //前端返回错误时间戳，所以特判一下。253402300799对应10000-01-01 07:59:59 +0800 CST
 		latestTime = req.LatestTime
 	}
 
@@ -53,6 +53,10 @@ func GetFeedVideo(ctx context.Context, req *video.GetFeedVideoReq) (*video.GetFe
 			}
 
 			v.IsFavorite = check
+
+			if userID == v.Author.ID {
+				continue // 自己不能关注自己
+			}
 
 			check, err = dao.CheckIsFollow(ctx, v.Author.ID, userID)
 			if err != nil {

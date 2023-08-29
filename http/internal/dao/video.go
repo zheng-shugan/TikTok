@@ -35,7 +35,7 @@ func QueryPublishList(ctx context.Context, userID int64) ([]*video.Video, error)
 		return nil, err
 	}
 
-	// 将数据层映射到业务层
+	// 获取每个视频的实时信息并将数据层映射到业务层
 	for _, v := range videos {
 		var v3 *video.Video // 业务层
 
@@ -78,7 +78,7 @@ func QueryFeedVideo(ctx context.Context, limit int, latestTime int64) ([]*video.
 		return nil, err
 	}
 
-	// 统计每个视频的点赞数和评论数并将数据层映射到业务层
+	// 获取每个视频的实时信息并将数据层映射到业务层
 	for _, v := range videos {
 		var user2 *video.User // 业务层
 		var v3 *video.Video   // 业务层
