@@ -182,7 +182,7 @@ func calTotalFavorited(ctx context.Context, userID int64) (int64, error) {
 	var videoID []int64
 
 	// 查询用户所有作品的videoID
-	err := conn.Find(&models.Video{}).Where("author_id = ?", userID).Pluck("video_id", &videoID).Error
+	err := conn.Model(&models.Video{}).Where("author_id = ?", userID).Pluck("id", &videoID).Error
 	if err != nil {
 		return 0, err
 	}

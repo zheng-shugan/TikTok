@@ -59,6 +59,7 @@ func RealTimeUser(ctx context.Context, u *models.User) error {
 	return nil
 }
 
+// 获取视频的实时信息
 func RealTimeVideo(ctx context.Context, v *models.Video) error {
 	videoFavoriteCount, err := calVideoFavoriteCount(ctx, v.ID)
 	if err != nil {
@@ -182,7 +183,7 @@ func calTotalFavorited(ctx context.Context, userID int64) (int64, error) {
 	var videoID []int64
 
 	// 查询用户所有作品的videoID
-	err := conn.Find(&models.Video{}).Where("author_id = ?", userID).Pluck("video_id", &videoID).Error
+	err := conn.Model(&models.Video{}).Where("author_id = ?", userID).Pluck("id", &videoID).Error
 	if err != nil {
 		return 0, err
 	}

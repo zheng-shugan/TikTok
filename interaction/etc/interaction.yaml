@@ -1,9 +1,5 @@
-Name: interaction.rpc
-ListenOn: 0.0.0.0:3001
-#Etcd:
-#  Hosts:
-#  - 127.0.0.1:2379
-#  Key: interaction.rpc
+Name: "interaction.rpc"
+ListenOn: "0.0.0.0:3001"
 
 mysql:
   host: "127.0.0.1"
@@ -13,3 +9,8 @@ mysql:
   dbname: "tiktok"
   max_idle_conns: 10
   max_open_conns: 30
+
+#Etcd:
+#  Hosts:
+#  - 127.0.0.1:2379
+#  Key: interaction.rpc

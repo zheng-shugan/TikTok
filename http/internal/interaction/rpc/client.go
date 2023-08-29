@@ -12,9 +12,11 @@ import (
 
 var interactionClient ___interaction.InteractionClient
 
-func init() {
-	relationConf := config.C().Apps.Relation
+func Init() {
+	relationConf := config.C().Apps.Interaction
+
 	Addr := fmt.Sprintf("%s:%s", relationConf.Host, relationConf.Port)
+	fmt.Println(Addr)
 	conn, err := grpc.Dial(Addr, grpc.WithBlock(), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Println(err)

@@ -21,13 +21,13 @@ func GetDB() *gorm.DB {
 	return db
 }
 
-func Init(c *config.Config) error {
+func Init() error {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		c.MySQL.User,
-		c.MySQL.Password,
-		c.MySQL.Host,
-		c.MySQL.Port,
-		c.MySQL.Dbname,
+		config.C().MySQL.User,
+		config.C().MySQL.Password,
+		config.C().MySQL.Host,
+		config.C().MySQL.Port,
+		config.C().MySQL.Dbname,
 	)
 
 	// 日志配置
@@ -55,10 +55,10 @@ func Init(c *config.Config) error {
 	sqlDB, _ := _db.DB()
 
 	// SetMaxIdleConns 用于设置连接池中空闲连接的最大数量。
-	sqlDB.SetMaxIdleConns(c.MySQL.MaxIdleConns)
+	sqlDB.SetMaxIdleConns(config.C().MySQL.MaxIdleConns)
 
 	// SetMaxOpenConns 设置打开数据库连接的最大数量。
-	sqlDB.SetMaxOpenConns(c.MySQL.MaxOpenConns)
+	sqlDB.SetMaxOpenConns(config.C().MySQL.MaxOpenConns)
 
 	// SetConnMaxLifetime 设置了连接可复用的最大时间。
 	sqlDB.SetConnMaxLifetime(time.Hour)

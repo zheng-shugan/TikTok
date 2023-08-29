@@ -3,14 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
-
 	"github.com/sunflower10086/TikTok/interaction/internal/config"
 	"github.com/sunflower10086/TikTok/interaction/internal/dao/db"
 	"github.com/sunflower10086/TikTok/interaction/internal/server"
 	"github.com/sunflower10086/TikTok/interaction/internal/svc"
 	___interaction "github.com/sunflower10086/TikTok/interaction/pb"
-
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
 	"github.com/zeromicro/go-zero/zrpc"
@@ -25,11 +22,13 @@ func main() {
 
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
-	ctx := svc.NewServiceContext(c)
 
-	err := db.Init(&c)
+	ctx := svc.NewServiceContext(c)
+	config.LoadConfigFromYaml(*configFile)
+
+	err := db.Init()
 	if err != nil {
-		log.Println("数据库连接失败!")
+		fmt.Println("数据库连接失败!")
 		return
 	}
 

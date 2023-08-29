@@ -6,7 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sunflower10086/TikTok/http/config"
 	"github.com/sunflower10086/TikTok/http/internal/dao/db"
-	_ "github.com/sunflower10086/TikTok/http/internal/relation/rpc"
+	___interaction "github.com/sunflower10086/TikTok/http/internal/interaction/rpc"
+	___relation "github.com/sunflower10086/TikTok/http/internal/relation/rpc"
 	"github.com/sunflower10086/TikTok/http/internal/router"
 )
 
@@ -18,6 +19,9 @@ func init() {
 }
 
 func main() {
+	go ___interaction.Init()
+	go ___relation.Init()
+
 	r := gin.Default()
 
 	router.Init(r)
@@ -25,4 +29,5 @@ func main() {
 	httpConf := config.C().Apps.HTTP
 	addr := fmt.Sprintf("%s:%s", httpConf.Host, httpConf.Port)
 	r.Run(addr)
+
 }

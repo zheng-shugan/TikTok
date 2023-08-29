@@ -2,11 +2,9 @@ package logic
 
 import (
 	"context"
-
 	"github.com/sunflower10086/TikTok/interaction/internal/dao"
 	"github.com/sunflower10086/TikTok/interaction/internal/svc"
 	___interaction "github.com/sunflower10086/TikTok/interaction/pb"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -25,16 +23,12 @@ func NewFavoriteActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Fa
 }
 
 func (l *FavoriteActionLogic) FavoriteAction(in *___interaction.FavoriteActionReq) (*___interaction.Empty, error) {
-	// 根据上下文获取userID
-	v := l.ctx.Value("userID") // 此时v是any类型
-	userID := v.(int64)        // 断言成int64
-
-	// 点赞 or 取消点赞
-	var err error = nil
+	//点赞 or 取消点赞
+	var err error
 	if in.ActionType == 1 {
-		err = dao.AddFavorite(l.ctx, userID, in.VideoId)
+		err = dao.AddFavorite(l.ctx, in.UserId, in.VideoId)
 	} else {
-		err = dao.DelFavorite(l.ctx, userID, in.VideoId)
+		err = dao.DelFavorite(l.ctx, in.UserId, in.VideoId)
 	}
 
 	return &___interaction.Empty{}, err

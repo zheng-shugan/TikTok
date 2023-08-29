@@ -5,8 +5,7 @@ package interaction
 
 import (
 	"context"
-
-	___interaction"github.com/sunflower10086/TikTok/interaction/pb"
+	___interaction "github.com/sunflower10086/TikTok/interaction/pb"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
@@ -22,6 +21,7 @@ type (
 	FavoriteListReq   = ___interaction.FavoriteListReq
 	FavoriteListResp  = ___interaction.FavoriteListResp
 	User              = ___interaction.User
+	Video             = ___interaction.Video
 
 	Interaction interface {
 		FavoriteAction(ctx context.Context, in *FavoriteActionReq, opts ...grpc.CallOption) (*Empty, error)
