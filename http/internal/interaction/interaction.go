@@ -2,7 +2,7 @@ package interaction
 
 type FavoriteListResp struct {
 	StatusCode int32    `json:"status_code"`
-	StatusMsg  string   `json:"status_msg"`
+	StatusMsg  *string  `json:"status_msg"`
 	VideoList  []*Video `json:"video_list"`
 }
 
@@ -15,7 +15,6 @@ type Video struct {
 	CommentCount  int64  `json:"comment_count"`
 	IsFavorite    bool   `json:"is_favorite"`
 	Title         string `json:"title"`
-	PublishTime   int64
 }
 
 type User struct {

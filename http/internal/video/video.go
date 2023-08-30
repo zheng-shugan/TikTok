@@ -34,9 +34,9 @@ type GetFeedVideoReq struct {
 }
 
 type GetFeedVideoResp struct {
-	StatusCode int32    `json:"status_code" binding:"required"`
+	StatusCode int32    `json:"status_code"`
 	StatusMsg  string   `json:"status_msg"`
-	VideoList  []*Video `json:"video_list" binding:"required"`
+	VideoList  []*Video `json:"video_list"`
 	NextTime   *int64   `json:"next_time"`
 }
 
